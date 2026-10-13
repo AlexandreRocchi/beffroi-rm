@@ -14,7 +14,7 @@ export interface AuditEntry {
   details: string;
   prev_hash: string;
   hash: string;
-  /** « hmac-sha256 » (clé secrète) ; « sha256 » pour les entrées antérieures à la version 1.1. */
+  /** « hmac-sha256 » (clé secrète) ; « sha256 » pour les entrées de l'ancien format (antérieur à Beffroi RM 1.0.0). */
   alg: string;
   key_id: string;
 }
@@ -87,7 +87,7 @@ export class AuditLog {
   }
 
   /**
-   * Passage d'un journal de la version 1.0 (empreintes SHA-256) au scellement HMAC : une entrée
+   * Passage d'un journal de l'ancien format (antérieur à Beffroi RM 1.0.0 ; empreintes SHA-256) au scellement HMAC : une entrée
    * scellée atteste le nombre et la dernière empreinte des entrées existantes, qui ne peuvent
    * ensuite plus être réécrites sans casser cette attestation.
    */
@@ -125,7 +125,7 @@ export class AuditLog {
   }
 
   /**
-   * Vérifie le chaînage et le scellement de chaque entrée. Les entrées SHA-256 (version 1.0) ne sont
+   * Vérifie le chaînage et le scellement de chaque entrée. Les entrées SHA-256 (ancien format, antérieur à Beffroi RM 1.0.0) ne sont
    * acceptées que si une entrée d'ancrage HMAC en atteste le nombre et la dernière empreinte ;
    * après la première entrée HMAC, toute entrée non scellée est une altération (rétrogradation).
    * La première entrée conservée peut suivre une purge journalisée.
