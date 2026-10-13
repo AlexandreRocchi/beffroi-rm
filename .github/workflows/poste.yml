@@ -3,9 +3,8 @@
 #   publication sur la page Releases du dépôt avec les sommes de contrôle SHA-256 ;
 # - lancement manuel (onglet Actions) : construction et test, livrables en artefacts du run.
 #
-# Signature Authenticode du .exe par SignPath (étiquettes « v* » seulement), activée dès que la
-# variable SIGNPATH_ORGANIZATION_ID et le secret SIGNPATH_API_TOKEN sont définis (docs/poste-seul.md).
-# Attestation de provenance GitHub (Sigstore) de chaque livrable publié.
+# Les exécutables ne sont pas signés (Authenticode) pour l'instant : mise en place de SignPath suivie
+# dans les issues du dépôt. Attestation de provenance GitHub (Sigstore) de chaque livrable publié.
 name: Exécutables poste seul
 
 on:
@@ -34,48 +33,23 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: L'étiquette correspond à la version du projet
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "${GITHUB_REF_NAME#v}" != "$version" ]; then
+            echo "::error::L'étiquette $GITHUB_REF_NAME ne correspond pas à la version $version de package.json"
+            exit 1
+          fi
       - run: npm ci
       - name: Exécutable autonome
         run: npm run poste
 
-      # ───── signature Authenticode (Windows, release, SignPath configuré) ─────
-      - name: Exécutable à signer
-        id: a-signer
-        if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v') && vars.SIGNPATH_ORGANIZATION_ID != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: exe-a-signer
-          path: release/*.exe
-          if-no-files-found: error
-      - name: Signature SignPath
-        if: steps.a-signer.outcome == 'success'
-        uses: signpath/github-action-submit-signing-request@v3
-        with:
-          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
-          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
-          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG || 'beffroi' }}
-          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG || 'release-signing' }}
-          artifact-configuration-slug: ${{ vars.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG || 'initial' }}
-          github-artifact-id: ${{ steps.a-signer.outputs.artifact-id }}
-          wait-for-completion: true
-          wait-for-completion-timeout-in-seconds: 3600
-          output-artifact-directory: signe
-      - name: Exécutable signé et somme de contrôle
-        if: steps.a-signer.outcome == 'success'
-        shell: pwsh
-        run: |
-          foreach ($f in Get-ChildItem signe -Filter *.exe) {
-            $sig = Get-AuthenticodeSignature $f.FullName
-            if ($sig.Status -ne 'Valid') { throw "Signature invalide pour $($f.Name) : $($sig.Status)" }
-            Write-Host "$($f.Name) signé par $($sig.SignerCertificate.Subject)"
-            Copy-Item $f.FullName release/ -Force
-            $h = (Get-FileHash -Algorithm SHA256 "release/$($f.Name)").Hash.ToLower()
-            [IO.File]::WriteAllText("$PWD/release/$($f.Name).sha256", "$h  $($f.Name)`n")
-          }
       - name: Navigateur de test
         shell: bash
         run: npx playwright install ${{ runner.os == 'Linux' && '--with-deps' || '' }} chromium
-      # Sous Windows, l'exécutable livré (signé le cas échéant) ; sous Linux, le binaire mis dans l'archive.
+      # Sous Windows, l'exécutable livré ; sous Linux, le binaire mis dans l'archive.
       - name: Test de bout en bout de l'exécutable
         shell: bash
         run: npm run test:poste -- "$(ls release/*.exe 2>/dev/null || echo build/poste/beffroi-poste)"
@@ -113,16 +87,10 @@ jobs:
             release/*.exe
             release/*.tar.gz
       - name: Notes de version
-        env:
-          SIGNE: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
         run: |
           cd release
           cat *.sha256 > SHA256SUMS
-          if [ "$SIGNE" = "true" ]; then
-            SIGNATURE="L'exécutable Windows est signé (Authenticode, certificat SignPath Foundation). Pour un nouvel exécutable, SmartScreen peut encore demander une confirmation le temps que sa réputation s'établisse."
-          else
-            SIGNATURE="Les exécutables ne sont pas signés : Windows SmartScreen peut demander une confirmation (« Informations complémentaires » puis « Exécuter quand même »)."
-          fi
+          SIGNATURE="Les exécutables ne sont pas signés : Windows SmartScreen peut demander une confirmation (« Informations complémentaires » puis « Exécuter quand même »)."
           cat > notes.md <<NOTES
           ## Téléchargements
 

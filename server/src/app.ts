@@ -65,7 +65,7 @@ export async function buildApp(config: Config, opts: { db?: DB } = {}): Promise<
   fs.mkdirSync(config.dataDir, { recursive: true, mode: 0o700 });
   const keys = Keyring.load(config.dataDir, config.masterKey, config.previousMasterKeys);
   const sealer = new Sealer(keys);
-  const passwords = new Passwords(keys);
+  const passwords = new Passwords(keys, { allowLegacy: config.allowLegacyPasswordHashes });
   const audit = new AuditLog(db, keys, { stdout: config.auditStdout });
   const sessions = new Sessions(db, config);
   const store = new StudyStore(db, sealer);
@@ -80,6 +80,16 @@ export async function buildApp(config: Config, opts: { db?: DB } = {}): Promise<
   }
   if (report.stalePasswords && config.previousMasterKeys.length) {
     log.warn(`${report.stalePasswords} mot(s) de passe encore liés à une clé précédente : conservez-la jusqu'à la reconnexion de ces comptes (ou réinitialisez-les).`);
+  }
+  if (report.legacyPasswords && !config.allowLegacyPasswordHashes) {
+    log.warn(
+      `${report.legacyPasswords} compte(s) local(aux) ont encore un mot de passe de l'ancien format (sans poivre), désormais refusé : ces utilisateurs ne peuvent plus se connecter. ` +
+        "Activez temporairement ALLOW_LEGACY_PASSWORD_HASHES=true le temps de leur reconnexion (leur mot de passe est alors renouvelé), ou faites réinitialiser leur mot de passe par un administrateur.",
+    );
+  } else if (report.legacyPasswords) {
+    log.warn(`ALLOW_LEGACY_PASSWORD_HASHES=true : ${report.legacyPasswords} compte(s) local(aux) restent à renouveler (mot de passe de l'ancien format, renouvelé à la prochaine connexion).`);
+  } else if (config.allowLegacyPasswordHashes) {
+    log.warn("ALLOW_LEGACY_PASSWORD_HASHES=true alors qu'aucun mot de passe de l'ancien format ne subsiste : retirez ce réglage.");
   }
   if (config.mfaPolicy !== "required") log.warn(`Authentification multifacteur non exigée pour tous les comptes locaux (MFA_POLICY=${config.mfaPolicy}).`);
   if (!config.cookieSecure) log.warn("Cookies sans attribut Secure : servez Beffroi RM en HTTPS (TLS_CERT/TLS_KEY) ou derrière un reverse proxy HTTPS avec COOKIE_SECURE=true.");

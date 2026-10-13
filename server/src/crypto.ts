@@ -13,13 +13,20 @@ function scryptAsync(input: string | Buffer, salt: Buffer, keylen: number, p: { 
 /**
  * Empreintes de mots de passe : scrypt sur un HMAC du mot de passe avec une sous-clé secrète
  * (« poivre »). Une copie de la base seule ne permet donc pas d'attaquer les empreintes hors ligne.
- * Format : scrypt2$<identifiant de clé>$N$r$p$<sel>$<empreinte>. Les empreintes de la version 1.0
- * (scrypt$N$r$p$sel$empreinte, sans poivre) restent vérifiables et sont remplacées à la connexion.
+ * Format : scrypt2$<identifiant de clé>$N$r$p$<sel>$<empreinte>. Les empreintes de l'ancien format
+ * (antérieur à Beffroi RM 1.0.0 : scrypt$N$r$p$sel$empreinte, sans poivre) sont refusées par défaut :
+ * une personne qui écrit dans la base pourrait en forger pour contourner le poivre. Elles ne sont
+ * acceptées (et remplacées à la connexion) que pendant une migration, avec `allowLegacy`.
  */
 export class Passwords {
   private readonly dummy: Promise<string>;
+  private readonly allowLegacy: boolean;
 
-  constructor(private readonly keys: Keyring) {
+  constructor(
+    private readonly keys: Keyring,
+    options: { allowLegacy?: boolean } = {},
+  ) {
+    this.allowLegacy = options.allowLegacy ?? false;
     this.dummy = this.hash(randomBytes(12).toString("hex"));
   }
 
@@ -46,6 +53,13 @@ export class Passwords {
       rest = parts.slice(2);
       stale = parts[1] !== this.keys.current.id;
     } else if (parts[0] === "scrypt" && parts.length === 6) {
+      if (!this.allowLegacy) {
+        // Refus sans calcul sur l'empreinte, mais avec la même durée qu'un identifiant inconnu (burn) :
+        // le temps de réponse ne doit pas révéler les comptes restés à l'ancien format. Pas de récursion :
+        // l'empreinte factice est au format scrypt2 avec la clé courante.
+        await this.burn(password);
+        return { ok: false, stale: false };
+      }
       input = password.normalize("NFKC");
       rest = parts.slice(1);
       stale = true;

@@ -1,4 +1,4 @@
-# Dossier de sécurité — Beffroi RM 1.0
+# Dossier de sécurité — Beffroi RM 1.1
 
 Ce dossier décrit la sécurité de Beffroi RM « par conception » : les menaces retenues, les mesures
 qui y répondent (et où elles se trouvent dans le code), la configuration de production, la
@@ -37,7 +37,7 @@ d'une organisation : c'est une information sensible, souvent protégée (Diffusi
 |---|---|---|---|
 | Authentification multifacteur | TOTP (RFC 6238) exigé par défaut pour tous les comptes locaux (`MFA_POLICY=required`) ; enrôlement imposé avant tout accès ; secret chiffré en base ; anti-rejeu (un code consommé ne sert plus) ; 10 codes de secours à usage unique, conservés sous forme d'empreintes HMAC | `server/src/mfa.ts`, `routes/auth.ts` | `api.test.ts` « authentification multifacteur », `security.test.ts` « TOTP » |
 | Authentification unique | OpenID Connect (code + PKCE, `state`, `nonce`) ; niveau d'authentification exigé (`OIDC_ACR_VALUES`) vérifié dans le jeton d'identité | `oidc.ts` | `oidc.test.ts` |
-| Empreintes de mots de passe | scrypt N = 2^17, r = 8 (128 Mio par calcul) sur un HMAC du mot de passe avec une sous-clé secrète (poivre) : une copie de la base seule ne permet pas d'attaque hors ligne ; recalcul transparent des empreintes anciennes à la connexion | `crypto.ts` | `security.test.ts` « mots de passe » |
+| Empreintes de mots de passe | scrypt N = 2^17, r = 8 (128 Mio par calcul) sur un HMAC du mot de passe avec une sous-clé secrète (poivre) : une copie de la base seule ne permet pas d'attaque hors ligne ; recalcul transparent à la connexion des empreintes liées à une clé précédente ; les empreintes de l'ancien format (sans poivre) sont refusées par défaut et ne sont acceptées que pendant une migration (`ALLOW_LEGACY_PASSWORD_HASHES=true`, à retirer ensuite) | `crypto.ts` | `security.test.ts` « mots de passe » |
 | Politique de mot de passe | ≥ 12 caractères, trois types ; refus des mots courants (y compris déguisés : « P@ssw0rd-2026 »), de l'identité de l'utilisateur, des suites et répétitions, et des 5 derniers mots de passe | `crypto.ts` | `api.test.ts` |
 | Anti-énumération | même réponse et même durée pour un compte inconnu, désactivé, sans mot de passe local ou mauvais mot de passe ; le verrouillage n'est signalé qu'à qui connaît le mot de passe | `routes/auth.ts` | `api.test.ts` |
 | Résistance à la force brute | verrouillage du compte après 5 échecs (mot de passe ou second facteur), 20 tentatives par minute et par adresse IP | `routes/auth.ts` | `api.test.ts`, `security.test.ts` |

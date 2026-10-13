@@ -113,7 +113,7 @@ export class Sealer {
     throw new Error("Format de chiffré inconnu.");
   }
 
-  /** Format v1 (version 1.0) : clé maître utilisée directement, sans identifiant de clé. */
+  /** Format v1 (ancien format, antérieur à Beffroi RM 1.0.0) : clé maître utilisée directement, sans identifiant de clé. */
   private openV1(buf: Buffer, aad: string): string {
     for (const key of this.keys.rawKeys()) {
       try {

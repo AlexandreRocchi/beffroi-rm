@@ -206,8 +206,9 @@ Dans le dépôt :
 
 Beffroi RM a été développé avec l'assistance d'une IA générative, **Claude Code** (Anthropic). Une
 grande partie du code, des tests et de la documentation a été rédigée par l'IA, à ma demande et
-sous ma direction ; les commits concernés le mentionnent (`Co-Authored-By: Claude`). Je ne le
-cache pas : c'est la façon dont le projet a été conduit.
+sous ma direction. Je ne le cache pas : c'est la façon dont le projet a été conduit. Les commits
+de ce dépôt sont faits à mon nom, après relecture ; l'historique de l'ancien dépôt `beffroi`, dont
+ce projet est issu, mentionnait l'assistance de l'IA dans ses commits (`Co-Authored-By: Claude`).
 
 L'IA n'a pas travaillé seule. Mes connaissances issues de mon bachelor en développement, une
 méthode et des vérifications systématiques m'ont permis d'encadrer le projet :

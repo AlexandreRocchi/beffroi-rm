@@ -108,36 +108,7 @@ Développement (sans empaquetage) : `npm run dev:poste`.
 
 ## Signature de l'exécutable Windows
 
-Le workflow signe le `.exe` (Authenticode) avec [SignPath](https://signpath.io), dont la
-[SignPath Foundation](https://signpath.org) offre gratuitement certificat et signature aux projets
-open source. La clé privée reste dans le HSM de SignPath : aucun certificat ni mot de passe n'est
-stocké dans le dépôt ou dans GitHub. Tant que SignPath n'est pas configuré, la release est publiée
-sans signature, comme aujourd'hui.
-
-Mise en place (une fois) :
-
-1. **Candidature** sur [signpath.org](https://signpath.org) (Apply) : projet open source sous
-   licence OSI (Apache-2.0), dépôt public, maintenu, publiant déjà des releases. La fondation
-   vérifie le projet ; le certificat est émis au nom de « SignPath Foundation ».
-2. Dans l'organisation SignPath créée, **projet** `beffroi` relié au dépôt GitHub :
-   - *Trusted build system* : ajouter le connecteur **GitHub.com** (SignPath vérifie que la
-     demande vient bien d'un run de ce workflow, sur un runner hébergé par GitHub) ;
-   - *Artifact configuration* `initial` : contenu de
-     [`.signpath/artifact-configuration.xml`](../.signpath/artifact-configuration.xml) ;
-   - *Signing policy* `release-signing` (certificat de la fondation, approbation manuelle de chaque
-     demande par un approbateur désigné, en général vous).
-3. Dans SignPath, créer un **utilisateur CI** (*Users → Add CI user*) avec le rôle *Submitter* sur
-   la politique, et copier son jeton d'API.
-4. Dans GitHub, *Settings → Secrets and variables → Actions* :
-   - secret `SIGNPATH_API_TOKEN` : le jeton de l'utilisateur CI ;
-   - variable `SIGNPATH_ORGANIZATION_ID` : l'identifiant de l'organisation SignPath (son URL) ;
-   - variables facultatives si vos noms diffèrent : `SIGNPATH_PROJECT_SLUG` (défaut `beffroi`),
-     `SIGNPATH_POLICY_SLUG` (`release-signing`), `SIGNPATH_ARTIFACT_CONFIGURATION_SLUG` (`initial`).
-
-Ensuite, à chaque étiquette `v*`, le job Windows soumet l'exécutable à SignPath, attend
-l'approbation (une heure au plus), vérifie la signature, met à jour la somme de contrôle puis
-teste l'exécutable signé avant publication. Les lancements manuels du workflow ne sont pas signés.
-
-Vérification par l'utilisateur : clic droit sur le `.exe` → *Propriétés* → *Signatures
-numériques*, ou `Get-AuthenticodeSignature .\beffroi-poste-<version>-windows-x64.exe`.
-
+L'exécutable Windows n'est pas signé (Authenticode) : Windows SmartScreen peut demander une
+confirmation au premier lancement (« Informations complémentaires » puis « Exécuter quand même »).
+L'intégrité se vérifie par la somme de contrôle SHA-256 et par l'attestation de provenance (ci-dessus).
+La mise en place d'une signature avec SignPath est suivie dans les issues du dépôt.

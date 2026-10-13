@@ -67,6 +67,12 @@ export interface Config {
   rateLimitPerMinute: number;
   /** Tentatives de connexion autorisées par adresse IP et par minute (mot de passe et second facteur). */
   loginRateLimitPerMinute: number;
+  /**
+   * Accepte les empreintes de mot de passe de l'ancien format (antérieur à Beffroi RM 1.0.0, sans poivre)
+   * et les remplace à la connexion. À n'activer que pendant la migration : ce format permet à qui écrit
+   * dans la base de contourner le poivre. Vrai uniquement si ALLOW_LEGACY_PASSWORD_HASHES vaut « true ».
+   */
+  allowLegacyPasswordHashes: boolean;
 }
 
 /**
@@ -134,5 +140,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     auditStdout: bool(env.AUDIT_STDOUT, false),
     rateLimitPerMinute: Number(env.RATE_LIMIT_PER_MINUTE ?? 600),
     loginRateLimitPerMinute: Number(env.LOGIN_RATE_LIMIT_PER_MINUTE ?? 20),
+    allowLegacyPasswordHashes: env.ALLOW_LEGACY_PASSWORD_HASHES === "true",
   };
 }

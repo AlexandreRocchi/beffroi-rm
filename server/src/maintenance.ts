@@ -8,16 +8,21 @@ export interface RewrapReport {
   mfa: number;
   /** Empreintes de mot de passe encore liées à une ancienne clé (renouvelées à la prochaine connexion). */
   stalePasswords: number;
+  /**
+   * Empreintes de l'ancien format (antérieur à Beffroi RM 1.0.0, sans poivre) : refusées par défaut,
+   * renouvelées à la connexion seulement si ALLOW_LEGACY_PASSWORD_HASHES=true.
+   */
+  legacyPasswords: number;
 }
 
 /**
  * Mise à niveau cryptographique au démarrage, par lots et sans interruption du service :
- * - chiffre les métadonnées d'étude encore en clair (version 1.0) et vide les colonnes en clair ;
+ * - chiffre les métadonnées d'étude encore en clair (ancien format, antérieur à Beffroi RM 1.0.0) et vide les colonnes en clair ;
  * - rechiffre avec la clé courante tout ce qui l'a été avec une clé précédente ou l'ancien format.
  * Une fois le rapport vide, les clés précédentes peuvent être retirées du trousseau.
  */
 export async function rewrap(db: DB, keys: Keyring, sealer: Sealer, store: StudyStore): Promise<RewrapReport> {
-  const report: RewrapReport = { studies: 0, versions: 0, mfa: 0, stalePasswords: 0 };
+  const report: RewrapReport = { studies: 0, versions: 0, mfa: 0, stalePasswords: 0, legacyPasswords: 0 };
 
   for (const s of await all<{ id: string; name: string; reference: string; organisation: string; meta_enc: Buffer | null }>(
     db,
@@ -55,11 +60,14 @@ export async function rewrap(db: DB, keys: Keyring, sealer: Sealer, store: Study
     }
   }
 
+  // Les empreintes de l'ancien format (« scrypt$… ») sont comptées à part des empreintes liées à une ancienne clé.
   const stale = await one<{ n: number }>(
     db,
-    "SELECT count(*) AS n FROM users WHERE auth_source = 'local' AND password_hash <> '!' AND NOT password_hash LIKE $1",
+    "SELECT count(*) AS n FROM users WHERE auth_source = 'local' AND password_hash <> '!' AND NOT password_hash LIKE $1 AND NOT password_hash LIKE 'scrypt$%'",
     [`scrypt2$${keys.current.id}$%`],
   );
   report.stalePasswords = stale?.n ?? 0;
+  const legacy = await one<{ n: number }>(db, "SELECT count(*) AS n FROM users WHERE auth_source = 'local' AND password_hash LIKE 'scrypt$%'");
+  report.legacyPasswords = legacy?.n ?? 0;
   return report;
 }
