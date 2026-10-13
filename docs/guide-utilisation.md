@@ -25,21 +25,21 @@ Ces composants sont inscrits au SILL (socle interministériel de logiciels libre
 
 ### 1.2 Modes d'installation
 
-Docker n'est pas nécessaire. Tous les modes serveur appliquent les mêmes mesures : trois rôles
-PostgreSQL (super-utilisateur, propriétaire du schéma réservé aux migrations, rôle applicatif sans
-droit sur le schéma), secrets en fichiers, processus cloisonné, TLS terminé par un reverse proxy.
+Docker n'est pas nécessaire : cinq modes d'installation. Les trois modes de production (Linux natif,
+Docker Compose, image seule) appliquent les mêmes mesures : trois rôles PostgreSQL (super-utilisateur,
+propriétaire du schéma réservé aux migrations, rôle applicatif sans droit sur le schéma), secrets en
+fichiers, processus cloisonné, TLS terminé par un reverse proxy.
 
 | Mode | Commande principale | Détail |
 |------|---------------------|--------|
 | Linux natif (systemd) | `sudo ./deploy/linux/installer.sh` | [installation, § 1](installation.md#1-linux-natif-systemd) |
 | Docker Compose (base incluse) | `docker compose up -d --build` | [installation, § 2](installation.md#2-docker-compose) |
 | Image seule + PostgreSQL existant | `docker run … beffroi` | [installation, § 3](installation.md#3-image-seule-et-postgresql-existant) |
-| Kubernetes | `kubectl apply -k deploy/kubernetes` | [installation, § 4](installation.md#4-kubernetes) |
-| Poste d'évaluation (Linux, macOS, Windows) | `./beffroi.sh` ou `beffroi.cmd` | [installation, § 5](installation.md#5-poste-dévaluation-linux-macos-windows) |
-| Depuis les sources | `npm ci && npm run build && npm start` | [installation, § 6](installation.md#6-depuis-les-sources) |
+| Poste d'évaluation (Linux, macOS, Windows) | `./beffroi.sh` ou `beffroi.cmd` | [installation, § 4](installation.md#4-poste-dévaluation-linux-macos-windows) |
+| Depuis les sources | `npm ci && npm run build && npm start` | [installation, § 5](installation.md#5-depuis-les-sources) |
 
 Reverse proxy HTTPS (Nginx, HAProxy, réglages TLS ANSSI) :
-[installation, § 7](installation.md#7-reverse-proxy-https).
+[installation, § 6](installation.md#6-reverse-proxy-https).
 
 ### 1.3 Installation hors ligne
 
