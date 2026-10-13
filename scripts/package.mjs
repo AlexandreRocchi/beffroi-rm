@@ -28,7 +28,7 @@ fs.mkdirSync(path.join(out, "server"), { recursive: true });
 fs.cpSync(path.join(root, "server/dist"), path.join(out, "server/dist"), { recursive: true });
 fs.cpSync(path.join(root, "web/dist"), path.join(out, "web/dist"), { recursive: true });
 fs.copyFileSync(path.join(root, "LICENSE"), path.join(out, "LICENSE"));
-// Fichiers de déploiement (installateur Linux, unités systemd, rôles PostgreSQL, Kubernetes,
+// Fichiers de déploiement (installateur Linux, unités systemd, rôles PostgreSQL,
 // reverse proxies) et documentation d'exploitation.
 fs.cpSync(path.join(root, "deploy"), path.join(out, "deploy"), { recursive: true });
 fs.mkdirSync(path.join(out, "docs"));
@@ -45,7 +45,7 @@ set -e
 cd "$(dirname "$0")"
 node -e "${checkNode}"
 if [ -z "\${DATABASE_URL:-}" ] && [ -z "\${PGDATABASE:-}" ]; then
-  echo "Base PostgreSQL non configurée : définissez DATABASE_URL (voir docs/installation.md, § 5)." >&2
+  echo "Base PostgreSQL non configurée : définissez DATABASE_URL (voir docs/installation.md, § 4)." >&2
   echo "  export DATABASE_URL=postgres://beffroi_app:MOT_DE_PASSE@localhost/beffroi" >&2
   exit 1
 fi
@@ -61,7 +61,7 @@ rem Lance Beffroi RM (Windows). Aucune connexion Internet n'est nécessaire.\r
 cd /d "%~dp0"\r
 node -e "${checkNode}" || exit /b 1\r
 if "%DATABASE_URL%%PGDATABASE%"=="" (\r
-  echo Base PostgreSQL non configuree : definissez DATABASE_URL ^(voir docs\\installation.md, paragraphe 5^).\r
+  echo Base PostgreSQL non configuree : definissez DATABASE_URL ^(voir docs\\installation.md, paragraphe 4^).\r
   echo   set DATABASE_URL=postgres://beffroi_app:MOT_DE_PASSE@localhost/beffroi\r
   exit /b 1\r
 )\r
@@ -170,8 +170,8 @@ INSTALLATION (sans accès Internet) — procédures complètes : docs/installati
      http://127.0.0.1:8080 ; le mot de passe initial du compte « admin » s'affiche au
      premier démarrage.
 
-  Autres modes (Docker Compose, image seule, Kubernetes) : docs/installation.md et
-  deploy/kubernetes. Reverse proxy HTTPS : deploy/nginx, deploy/haproxy.
+  Autres modes (Docker Compose, image seule) : docs/installation.md.
+  Reverse proxy HTTPS : deploy/nginx, deploy/haproxy.
 
 CONFIGURATION (variables d'environnement ; secrets de préférence en fichiers, suffixe _FILE)
   DATABASE_URL           connexion du rôle applicatif (ou variables PGHOST, PGUSER, PGDATABASE…)

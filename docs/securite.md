@@ -64,7 +64,8 @@ d'une organisation : c'est une information sensible, souvent protégée (Diffusi
   analyse inexistante (404).
 - L'administrateur gère comptes, groupes et journal, sans jamais accéder aux analyses ; le
   **nom des analyses n'apparaît pas dans le journal** qu'il consulte.
-- Contrôles côté serveur à chaque requête ; tout refus est journalisé.
+- Contrôles côté serveur à chaque requête ; tout refus d'accès à une ressource (403/404) par un
+  utilisateur connecté, ainsi que les échecs d'authentification, est journalisé.
 
 ### 2.4 Protection des données
 
@@ -74,19 +75,20 @@ d'une organisation : c'est une information sensible, souvent protégée (Diffusi
 | Liaison à l'enregistrement | les données associées (AAD) désignent l'usage et la ligne : un chiffré ne peut pas être déplacé d'une analyse à une autre |
 | Séparation des clés | une sous-clé par usage (données, métadonnées, MFA, journal, poivre, codes de secours), dérivée de la clé maître par HKDF-SHA256 ; la clé maître ne chiffre rien directement |
 | Rotation | chaque chiffré porte l'identifiant de sa clé ; au démarrage, tout ce qui l'a été avec une clé précédente est rechiffré avec la clé courante (§ 4) |
-| Secrets hors environnement | clé maître, mots de passe de base et secret OIDC lus dans des fichiers (`*_FILE` : `LoadCredential` systemd, secrets Docker ou Kubernetes) |
+| Secrets hors environnement | clé maître, mots de passe de base et secret OIDC lus dans des fichiers (`*_FILE` : `LoadCredential` systemd, secrets Docker) |
 | Exports | générés dans le navigateur ; mention de protection sur chaque livrable ; neutralisation de l'injection de formules dans les CSV |
 | Minimisation | aucune donnée d'analyse dans les journaux techniques ; aucun cache navigateur ou proxy pour l'API (`Cache-Control: no-store`) |
 
 ### 2.5 Base de données
 
 - **Moindre privilège** : le rôle propriétaire du schéma n'est utilisé que pour les migrations
-  (`server.js --migrate` : unité `beffroi-migrate`, conteneur `migrate` ou conteneur
-  d'initialisation Kubernetes) ; l'application se connecte avec un rôle qui lit et écrit
-  les données métier, ajoute au journal, et ne peut ni modifier le schéma ni altérer le journal.
-  Au démarrage, l'application signale un rôle super-utilisateur ou propriétaire.
+  (`server.js --migrate` : unité `beffroi-migrate`, conteneur `migrate`) ; l'application se
+  connecte avec un rôle qui lit et écrit les données métier, ajoute au journal, et ne peut ni
+  modifier le schéma ni altérer le journal. Au démarrage, l'application signale un rôle super-utilisateur ou propriétaire.
 - **Journal en ajout seul** : des déclencheurs refusent `UPDATE`, `DELETE` et `TRUNCATE` sur le
-  journal ; la purge (entrées de plus d'un an) passe par une fonction contrôlée.
+  journal pour le rôle applicatif, lorsque les rôles sont séparés ; le propriétaire du schéma peut
+  les contourner (le scellement et la copie vers un SIEM le détectent). La purge (entrées de plus
+  d'un an) passe par une fonction contrôlée.
 - Requêtes paramétrées uniquement ; bornes d'exécution (instruction 30 s, verrou 10 s,
   transaction inactive 60 s) ; contrôle de révision sous verrou de ligne.
 - TLS vers PostgreSQL (`DATABASE_SSL=verify-full` et `DATABASE_SSL_CA_FILE`) lorsque la base est
@@ -97,9 +99,10 @@ d'une organisation : c'est une information sensible, souvent protégée (Diffusi
 - Couvre sessions, échecs, verrouillages, second facteur, comptes, droits, lecture, écriture,
   export et versions des analyses, consultation et purge du journal, démarrage et arrêt.
 - **Scellé par HMAC-SHA256** (clé dérivée de la clé maître, absente de la base) et chaîné :
-  modifier, insérer ou supprimer une entrée — même en recalculant les empreintes — est détecté
-  par la vérification d'intégrité. Toute tentative de rétrogradation vers l'ancien format non
-  scellé est également détectée.
+  modifier ou insérer une entrée, ou en supprimer une au milieu du journal, est détecté par la
+  vérification d'intégrité. La suppression des premières ou des dernières entrées ne l'est pas :
+  la copie vers un SIEM (`AUDIT_STDOUT`) en garde la preuve. Toute tentative de rétrogradation
+  vers l'ancien format non scellé est détectée.
 - Copie en temps réel sur la sortie standard, une entrée JSON par ligne (`AUDIT_STDOUT=true`),
   pour un collecteur (journald, syslog) ou un SIEM : la preuve est conservée hors de la base.
 
@@ -127,10 +130,9 @@ d'une organisation : c'est une information sensible, souvent protégée (Diffusi
 
 ## 3. Configuration de production
 
-1. Déployer selon l'un des modes serveur du [guide d'installation](installation.md) — Linux
-   natif (unités systemd durcies), Docker Compose, image seule ou Kubernetes (profil
-   *restricted*), qui appliquent tous le même cloisonnement ; conserver les secrets générés
-   dans un coffre-fort.
+1. Déployer selon l'un des modes de production du [guide d'installation](installation.md) — Linux
+   natif (unités systemd durcies), Docker Compose ou image seule, qui appliquent tous le même
+   cloisonnement ; conserver les secrets générés dans un coffre-fort.
 2. Servir en HTTPS : reverse proxy TLS (Nginx, HAProxy) avec `COOKIE_SECURE=true` et
    `TRUST_PROXY=true`, ou TLS natif (`TLS_CERT`, `TLS_KEY`).
 3. Conserver `MFA_POLICY=required` ; avec l'authentification unique, exiger le MFA chez le
@@ -146,13 +148,13 @@ d'une organisation : c'est une information sensible, souvent protégée (Diffusi
 ## 4. Rotation de la clé maître
 
 1. Générer une nouvelle clé : `openssl rand -base64 32`.
-2. Redémarrer avec `BEFFROI_MASTER_KEY` = nouvelle clé et `BEFFROI_PREVIOUS_MASTER_KEYS` =
-   ancienne clé (plusieurs clés séparées par des virgules). Au démarrage, analyses, métadonnées
-   et secrets MFA sont rechiffrés avec la nouvelle clé (entrée `crypto.rewrap` au journal).
-3. Les empreintes de mots de passe et les codes de secours, calculés avec un poivre lié à la
-   clé, sont renouvelés à la connexion de chaque utilisateur ; le démarrage indique combien
-   restent liés à l'ancienne clé. Le journal reste vérifiable tant que l'ancienne clé est
-   présente dans le trousseau.
+2. Redémarrer avec `BEFFROI_MASTER_KEY_FILE` désignant un fichier contenant la nouvelle clé et
+   `BEFFROI_PREVIOUS_MASTER_KEYS_FILE` un fichier contenant l'ancienne clé (plusieurs clés séparées
+   par des virgules). Au démarrage, analyses, métadonnées et secrets MFA sont rechiffrés avec la
+   nouvelle clé (entrée `crypto.rewrap` au journal).
+3. Les empreintes de mots de passe, calculées avec un poivre lié à la clé, sont renouvelées à la
+   connexion de chaque utilisateur ; le démarrage indique combien restent liés à l'ancienne clé.
+   Le journal reste vérifiable tant que l'ancienne clé est présente dans le trousseau.
 4. Conserver l'ancienne clé (en lecture seule) tant que des empreintes ou des entrées de journal
    en dépendent, puis la retirer ; réinitialiser au besoin les comptes non reconnectés.
 
@@ -162,7 +164,7 @@ d'une organisation : c'est une information sensible, souvent protégée (Diffusi
 |---|---|
 | Hameçonnage en temps réel du second facteur | le TOTP ne résiste pas à un relais d'hameçonnage ; l'authentification unique avec un facteur résistant (clé FIDO2 chez le fournisseur d'identité) supprime ce risque |
 | Compromission du serveur applicatif | l'application détient la clé maître en mémoire : un attaquant qui la contrôle lit les analyses ; durcissement de l'hôte et cloisonnement du conteneur à la charge de l'exploitant |
-| Suppression des dernières entrées du journal par un super-utilisateur de la base | le scellement détecte toute modification mais pas la troncature de la fin du journal : la copie vers un SIEM (`AUDIT_STDOUT`) en conserve la preuve |
+| Suppression des premières ou des dernières entrées du journal par un super-utilisateur de la base | le scellement détecte toute modification mais pas la troncature du début et de la fin du journal : la copie vers un SIEM (`AUDIT_STDOUT`) en conserve la preuve |
 | Limitation de débit par instance | les compteurs sont en mémoire : avec plusieurs instances, la limite s'applique par instance (le verrouillage par compte, lui, est en base) ; compléter au reverse proxy |
 | Fichiers exportés | non chiffrés par Beffroi RM : à protéger selon leur mention de protection |
 | Attributs de style en ligne autorisés par la CSP | nécessaires aux composants graphiques ; ils ne permettent pas d'exécuter du script |

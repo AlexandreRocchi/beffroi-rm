@@ -154,7 +154,7 @@ Lecture : ●●● très bon, ○○○ absent ou faible, d'après la documenta
    intégré) et **formats ouverts** (JSON complet, Excel multi-onglets, Word, PDF) : on répond au
    besoin de souveraineté sans le coût d'Egerie.
 6. **Collaboration** : lecteurs illimités, droits lecture/écriture par analyse et par groupe,
-   journal d'audit, versions x.y conformes au label.
+   journal d'audit, versions x.y conformes au cahier des charges du label (auto-évaluation).
 7. **Pédagogie intégrée** : aide contextuelle issue du guide et des fiches à chaque activité,
    exemple ANSSI (biotech vaccins) importable pour apprendre.
 8. **Migration depuis le tableur** : reprise directe du modèle Excel de l'ANSSI, point d'entrée

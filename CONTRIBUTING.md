@@ -16,7 +16,7 @@ type(scope): description
 ```
 
 - **type** (obligatoire) : `feat`, `fix`, `docs`, `ci`, `deploy`, `refactor`, `test`, `style`, `chore`, `perf`, `build`.
-- **scope** (facultatif) : `shared`, `server`, `web`, `deploy`, `docs`, `ci`, `e2e`, `scripts`, `k8s`, `poste`, `installer`.
+- **scope** (facultatif) : `shared`, `server`, `web`, `deploy`, `docs`, `ci`, `e2e`, `scripts`, `poste`, `installer`.
 - **description** : en français, première lettre en minuscule, sans point final, 72 caractères au plus.
 - **changement incompatible** : `!` après le type ou le scope, par exemple `feat(server)!: …`.
 - Le message ne contient ni `Co-Authored-By` ni mention d'outil généré.

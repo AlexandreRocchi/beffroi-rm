@@ -2,8 +2,8 @@
 
 Beffroi RM est un **serveur d'équipe** : un serveur Node.js (un seul fichier, aucune dépendance npm à
 l'exécution), une base PostgreSQL, et les analystes qui se connectent depuis leur navigateur.
-Docker n'est **pas** nécessaire : six modes d'installation sont proposés, et tous les modes de
-production appliquent les mêmes mesures de sécurité.
+Docker n'est **pas** nécessaire : cinq modes d'installation sont proposés ; les trois modes de
+production (Linux natif, Docker Compose, image seule) appliquent les mêmes mesures de sécurité.
 
 ## Choisir un mode
 
@@ -12,15 +12,14 @@ production appliquent les mêmes mesures de sécurité.
 | [1. Linux natif (systemd)](#1-linux-natif-systemd) | Serveur Linux dédié, sans conteneurs | Node.js ≥ 22.13, PostgreSQL ≥ 14 (local ou distant), systemd | `deploy/linux`, `deploy/postgres` |
 | [2. Docker Compose](#2-docker-compose) | Serveur avec Docker ou Podman, base incluse | Docker Engine + Compose v2 | `compose.yaml`, `deploy/postgres` |
 | [3. Image seule + PostgreSQL existant](#3-image-seule-et-postgresql-existant) | Base déjà exploitée (service interne, instance managée) | Moteur de conteneurs | `Dockerfile`, `deploy/postgres/roles.sql` |
-| [4. Kubernetes](#4-kubernetes) | Grappe Kubernetes / OpenShift | Kubernetes ≥ 1.25, PostgreSQL existant | `deploy/kubernetes` |
-| [5. Poste d'évaluation (Linux, macOS, Windows)](#5-poste-dévaluation-linux-macos-windows) | Essai, démonstration, formation | Node.js ≥ 22.13, PostgreSQL ≥ 14 | archive d'installation |
-| [6. Depuis les sources](#6-depuis-les-sources) | Développement, construction de l'archive | Node.js ≥ 22.13, npm | dépôt |
+| [4. Poste d'évaluation (Linux, macOS, Windows)](#4-poste-dévaluation-linux-macos-windows) | Essai, démonstration, formation | Node.js ≥ 22.13, PostgreSQL ≥ 14 | archive d'installation |
+| [5. Depuis les sources](#5-depuis-les-sources) | Développement, construction de l'archive | Node.js ≥ 22.13, npm | dépôt |
 
 Utilisation **seule, sans collaboration** : l'exécutable du [mode poste seul](poste-seul.md)
 (Windows, Linux) se lance sans aucun prérequis ni installation, sans PostgreSQL ni compte.
 
 Quel que soit le mode, l'application **n'a besoin d'aucun accès Internet** et n'émet aucune requête
-sortante. Les modes 1, 2, 3 et 4 partagent la même architecture de sécurité :
+sortante. Les modes 1, 2 et 3 partagent la même architecture de sécurité :
 
 - **trois rôles PostgreSQL** ([`deploy/postgres/roles.sql`](../deploy/postgres/roles.sql)) :
   le super-utilisateur n'est confié à aucun composant de Beffroi RM ; `beffroi_owner` (propriétaire
@@ -30,7 +29,7 @@ sortante. Les modes 1, 2, 3 et 4 partagent la même architecture de sécurité :
   configuration : mot de passe de chaque rôle, clé maître, mot de passe initial de l'administrateur ;
 - **processus cloisonné** : compte non privilégié, système de fichiers en lecture seule, aucune
   capacité Linux, pas d'élévation de privilèges, ressources bornées ;
-- **TLS terminé par un reverse proxy** ([§ 7](#7-reverse-proxy-https)) ; Beffroi RM n'écoute que sur
+- **TLS terminé par un reverse proxy** ([§ 6](#6-reverse-proxy-https)) ; Beffroi RM n'écoute que sur
   l'interface locale ou le réseau interne, avec `COOKIE_SECURE=true` et `TRUST_PROXY=true`.
 
 Au premier démarrage, le compte **admin** est créé. Son mot de passe initial est lu dans
@@ -120,7 +119,7 @@ docker compose logs beffroi        # mot de passe initial du compte « admin »
   conteneurs en lecture seule, sans capacité, `no-new-privileges`, processus et mémoire bornés.
 - Images de base paramétrables pour un registre interne : `NODE_IMAGE`, `POSTGRES_IMAGE`.
 - Publication sur `127.0.0.1:8080` (`BEFFROI_BIND`, `BEFFROI_PORT`), derrière un reverse proxy
-  HTTPS ([§ 7](#7-reverse-proxy-https)).
+  HTTPS ([§ 6](#6-reverse-proxy-https)).
 
 ## 3. Image seule et PostgreSQL existant
 
@@ -162,51 +161,7 @@ Les fichiers de secrets doivent être lisibles par l'utilisateur de l'image (uid
 `scripts/generer-secrets.sh` les prépare. Pour vérifier le certificat de la base, montez la CA et
 ajoutez `DATABASE_SSL_CA_FILE`.
 
-## 4. Kubernetes
-
-[`deploy/kubernetes`](../deploy/kubernetes) est une configuration Kustomize, à adapter puis à
-appliquer avec `kubectl apply -k`. PostgreSQL est fourni à part (service managé, opérateur
-CloudNativePG…), avec les rôles de `roles.sql`.
-
-```bash
-# Image dans le registre interne (nom à reporter dans kustomization.yaml, champ images)
-docker build -t registre.interne/beffroi:1.1.0 . && docker push registre.interne/beffroi:1.1.0
-
-# Secrets (jamais versionnés) : ./scripts/generer-secrets.sh puis
-kubectl create namespace beffroi
-kubectl -n beffroi create secret generic beffroi-app \
-  --from-file=db_app_password=secrets/db_app_password \
-  --from-file=master_key=secrets/master_key \
-  --from-file=admin_initial_password=secrets/admin_initial_password
-kubectl -n beffroi create secret generic beffroi-migration \
-  --from-file=db_owner_password=secrets/db_owner_password
-
-# Adapter configmap.yaml (adresse de la base), networkpolicy.yaml et ingress.yaml (nom d'hôte), puis :
-kubectl apply -k deploy/kubernetes
-```
-
-Créez `secrets/admin_initial_password` vous-même (par exemple
-`openssl rand -base64 18 > secrets/admin_initial_password`) : ainsi le mot de passe initial n'apparaît
-pas dans les journaux du pod.
-
-| Mesure | Mise en œuvre |
-|--------|---------------|
-| Pod Security Standards | espace de noms au profil **restricted** (`enforce`) |
-| Moindre privilège base | migrations dans un conteneur d'initialisation, seul à monter le secret `beffroi-migration` ; l'application ne reçoit que `beffroi-app` |
-| Conteneurs | utilisateur 1000, `readOnlyRootFilesystem`, `capabilities.drop: [ALL]`, `allowPrivilegeEscalation: false`, seccomp `RuntimeDefault`, limites mémoire |
-| API Kubernetes | compte de service sans jeton (`automountServiceAccountToken: false`) |
-| Réseau | NetworkPolicy : entrées depuis le seul contrôleur d'entrée ; sorties vers DNS et PostgreSQL uniquement |
-| TLS | Ingress (secret `beffroi-tls`) ; réglages TLS ANSSI dans la ConfigMap du contrôleur |
-
-Les migrations prennent un verrou PostgreSQL : plusieurs réplicas peuvent démarrer ensemble. Au-delà
-d'un réplica, les limites de débit (connexion, API) s'appliquent par réplica.
-
-> **État de validation** : les manifestes sont validés par `kustomize build` et `kubeconform`
-> (schémas Kubernetes 1.30), et les contraintes du pod (uid 1000, lecture seule, sans capacité)
-> sont éprouvées avec l'image réelle sous Docker. Ils n'ont pas été déployés sur une grappe réelle
-> dans le cadre des tests de Beffroi RM : faites une recette sur votre plateforme.
-
-## 5. Poste d'évaluation (Linux, macOS, Windows)
+## 4. Poste d'évaluation (Linux, macOS, Windows)
 
 Pour essayer Beffroi RM sur un poste de travail, sans conteneur ni service système : l'application
 tourne dans une fenêtre de terminal, sous le compte de l'utilisateur.
@@ -245,11 +200,11 @@ tourne dans une fenêtre de terminal, sous le compte de l'utilisateur.
    `MFA_POLICY=optional` pour une démonstration.
 
 Ce mode sert en HTTP sur l'interface locale uniquement : ne l'exposez pas sur le réseau. Pour une
-équipe, passez à un mode serveur (1 à 4).
+équipe, passez à un mode serveur (1 à 3).
 
-## 6. Depuis les sources
+## 5. Depuis les sources
 
-Base et rôles comme au [§ 5](#5-poste-dévaluation-linux-macos-windows), puis :
+Base et rôles comme au [§ 4](#4-poste-dévaluation-linux-macos-windows), puis :
 
 ```bash
 npm ci
@@ -263,7 +218,7 @@ npm run package         # archive d'installation hors ligne dans release/
 Développement (API avec rechargement et client Vite sur <http://localhost:5173>) :
 `DATABASE_URL=… npm run dev`.
 
-## 7. Reverse proxy HTTPS
+## 6. Reverse proxy HTTPS
 
 Beffroi RM n'émet pas de certificat : un reverse proxy termine TLS devant lui. Deux configurations
 prêtes à l'emploi, conformes au guide ANSSI sur TLS (TLS 1.2 et 1.3 uniquement, échange de clés
@@ -284,7 +239,7 @@ activez-les si l'hôte utilise IPv6.
 Beffroi RM peut aussi servir HTTPS directement (`TLS_CERT`, `TLS_KEY`), par exemple sur un poste
 isolé ; le reverse proxy reste recommandé en production (certificats, journalisation, filtrage).
 
-## 8. Vérifier une installation
+## 7. Vérifier une installation
 
 Le parcours de bout en bout (navigateur réel) s'exécute contre n'importe quelle instance vierge :
 
