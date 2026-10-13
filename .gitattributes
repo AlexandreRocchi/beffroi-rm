@@ -1,1 +1,20 @@
+# Fins de ligne : LF partout dans le dépôt et dans la copie de travail, y compris sous Windows
+# (les scripts shell, montés dans Docker ou livrés dans l'archive, ne doivent pas être en CRLF).
+* text=auto eol=lf
+*.sh text eol=lf
 .githooks/* text eol=lf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Fichiers binaires : jamais convertis ni comparés comme du texte.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.mp4 binary
+*.xlsx binary
+*.exe binary
+*.gz binary
+*.woff binary
+*.woff2 binary
