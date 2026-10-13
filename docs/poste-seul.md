@@ -25,7 +25,7 @@ un journal de transparence public) : elle prouve que le fichier a été construi
 ce dépôt, à partir d'un commit précis. Vérification avec la CLI GitHub :
 
 ```bash
-gh attestation verify beffroi-poste-<version>-linux-x64.tar.gz --repo AlexandreRocchi/beffroi
+gh attestation verify beffroi-poste-<version>-linux-x64.tar.gz --repo AlexandreRocchi/beffroi-rm
 ```
 
 ## Lancer

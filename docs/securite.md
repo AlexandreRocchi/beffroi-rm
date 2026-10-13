@@ -1,4 +1,4 @@
-# Dossier de sécurité — Beffroi RM 1.1
+# Dossier de sécurité — Beffroi RM 1.0
 
 Ce dossier décrit la sécurité de Beffroi RM « par conception » : les menaces retenues, les mesures
 qui y répondent (et où elles se trouvent dans le code), la configuration de production, la
@@ -119,7 +119,7 @@ d'une organisation : c'est une information sensible, souvent protégée (Diffusi
 
 - Aucun script d'installation tiers (`.npmrc` : `ignore-scripts`), dépendances verrouillées
   (`package-lock.json`), nomenclature CycloneDX et licences livrées avec l'archive.
-- `npm run audit:deps` : vulnérabilités connues des dépendances de production. Au 29/09/2026,
+- `npm run audit:deps` : vulnérabilités connues des dépendances de production. Au 13/10/2026,
   seule une alerte modérée subsiste (GHSA-w5hq-g745-h8pq, `uuid` < 11.1.1 via exceljs) :
   **non exploitable**, la faille ne concerne que les fonctions v3/v5/v6 appelées avec un
   tampon, alors qu'exceljs n'appelle que `v4()` ; le code livré au navigateur est de plus le

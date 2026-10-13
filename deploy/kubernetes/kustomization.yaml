@@ -17,7 +17,7 @@ resources:
 images:
   - name: beffroi
     newName: registre.interne/beffroi
-    newTag: "1.1.0"
+    newTag: "1.0.0"
 labels:
   - pairs:
       app.kubernetes.io/name: beffroi

@@ -143,7 +143,16 @@ describe("base de données au moindre privilège", () => {
     await su.connect();
     await su.query(`CREATE ROLE ${role} LOGIN PASSWORD '${password}'`);
     await su.end();
-    const appUrl = `postgres://${role}:${password}@127.0.0.1:5432/${db.name}`;
+    // Même serveur que la connexion d'administration (TEST_DATABASE_URL), mais en TCP : le rôle
+    // jetable ne peut pas s'authentifier par le socket Unix (méthode « peer »).
+    const u = new URL(ADMIN_URL);
+    const viaSocket = !u.hostname || u.hostname.startsWith("%2F") || (u.searchParams.get("host") ?? "").startsWith("/");
+    u.searchParams.delete("host");
+    if (viaSocket || u.hostname === "localhost") u.hostname = "127.0.0.1";
+    u.username = role;
+    u.password = password;
+    u.pathname = `/${db.name}`;
+    const appUrl = u.toString();
     appPool = createPool({ connectionString: appUrl, max: 3 });
     const config = {
       ...loadConfig({}),
