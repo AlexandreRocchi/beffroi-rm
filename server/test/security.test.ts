@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import pg from "pg";
 import { deflateRawSync } from "node:zlib";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { exampleStudy } from "@beffroi/shared";
 import { bootstrapAdmin, buildApp, type AppContext } from "../src/app.js";
 import { loadConfig } from "../src/config.js";
@@ -15,7 +15,7 @@ import { Keyring, Sealer } from "../src/keys.js";
 import { rewrap } from "../src/maintenance.js";
 import { base32Decode, base32Encode, hotp, verifyTotp } from "../src/mfa.js";
 import { StudyStore } from "../src/studies.js";
-import { ADMIN_URL, Client, tempDatabase } from "./helpers.js";
+import { ADMIN_URL, Client, legacyHash, tempDatabase } from "./helpers.js";
 
 const key = () => randomBytes(32);
 
@@ -72,7 +72,7 @@ describe("chiffrement et trousseau de clés", () => {
     expect(() => new Sealer(new Keyring(key())).open("mfa-secret", blob, "mfa:u1")).toThrow(/absente du trousseau/);
   });
 
-  it("lit le format de la version 1.0 (clé maître directe)", () => {
+  it("lit l'ancien format (antérieur à Beffroi RM 1.0.0, clé maître directe)", () => {
     const raw = key();
     const iv = randomBytes(12);
     const c = createCipheriv("aes-256-gcm", raw, iv);
@@ -99,11 +99,33 @@ describe("mots de passe", () => {
     expect((await new Passwords(new Keyring(key())).verify("Colline-Brume-41", h)).ok).toBe(false);
   });
 
-  it("accepte l'ancien format (sans poivre) et demande son renouvellement", async () => {
-    const { scryptSync } = await import("node:crypto");
-    const salt = randomBytes(16);
-    const legacy = `scrypt$32768$8$1$${salt.toString("base64")}$${scryptSync("Ancien-Format-2025", salt, 32, { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 }).toString("base64")}`;
-    expect(await new Passwords(new Keyring(key())).verify("Ancien-Format-2025", legacy)).toEqual({ ok: true, stale: true });
+  it("accepte l'ancien format (sans poivre) quand le réglage de migration est activé, et demande son renouvellement", async () => {
+    const legacy = legacyHash("Ancien-Format-2025");
+    const p = new Passwords(new Keyring(key()), { allowLegacy: true });
+    const burn = vi.spyOn(p, "burn");
+    expect(await p.verify("Ancien-Format-2025", legacy)).toEqual({ ok: true, stale: true });
+    expect(await p.verify("Autre-Mot-De-Passe-2025", legacy)).toEqual({ ok: false, stale: false });
+    // Réglage activé : l'empreinte est réellement vérifiée, pas de calcul factice.
+    expect(burn).not.toHaveBeenCalled();
+  });
+
+  it("refuse par défaut l'ancien format (sans poivre), même valide", async () => {
+    const legacy = legacyHash("Ancien-Format-2025");
+    expect(await new Passwords(new Keyring(key())).verify("Ancien-Format-2025", legacy)).toEqual({ ok: false, stale: false });
+    expect(await new Passwords(new Keyring(key()), {}).verify("Ancien-Format-2025", legacy)).toEqual({ ok: false, stale: false });
+  });
+
+  it("refus de l'ancien format : calcul factice (burn) pour ne pas révéler les comptes concernés", async () => {
+    const p = new Passwords(new Keyring(key()));
+    const burn = vi.spyOn(p, "burn");
+    expect(await p.verify("Ancien-Format-2025", legacyHash("Ancien-Format-2025"))).toEqual({ ok: false, stale: false });
+    expect(burn).toHaveBeenCalledTimes(1);
+  });
+
+  it("le réglage ALLOW_LEGACY_PASSWORD_HASHES n'est actif que pour la valeur « true »", () => {
+    expect(loadConfig({}).allowLegacyPasswordHashes).toBe(false);
+    expect(loadConfig({ ALLOW_LEGACY_PASSWORD_HASHES: "true" }).allowLegacyPasswordHashes).toBe(true);
+    for (const v of ["1", "TRUE", "yes", "false", ""]) expect(loadConfig({ ALLOW_LEGACY_PASSWORD_HASHES: v }).allowLegacyPasswordHashes).toBe(false);
   });
 
   it("politique : longueur, diversité, mots courants, identité, suites", () => {
@@ -211,7 +233,7 @@ describe("base de données au moindre privilège", () => {
   });
 });
 
-describe("mise à niveau des données de la version 1.0 et rotation de clé", () => {
+describe("mise à niveau des données de l'ancien format (antérieur à Beffroi RM 1.0.0) et rotation de clé", () => {
   let db: Awaited<ReturnType<typeof tempDatabase>>;
   let pool: pg.Pool;
 
@@ -236,7 +258,7 @@ describe("mise à niveau des données de la version 1.0 et rotation de clé", ()
       { name: "Étude sensible", reference: "R1", organisation: "Org", protection: "DR" },
       exampleStudy(),
     );
-    // Simulation d'une base de la version 1.0 : métadonnées en clair.
+    // Simulation d'une base de l'ancien format (antérieur à Beffroi RM 1.0.0) : métadonnées en clair.
     await pool.query("UPDATE studies SET name = 'Étude sensible', reference = 'R1', organisation = 'Org', meta_enc = NULL WHERE id = $1", [meta.id]);
 
     // Redémarrage avec une nouvelle clé maître, l'ancienne passée en clé précédente.

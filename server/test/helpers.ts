@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { randomBytes, scryptSync } from "node:crypto";
 import os from "node:os";
 import pg from "pg";
 import { expect } from "vitest";
@@ -30,7 +30,14 @@ export async function tempDatabase(prefix: string): Promise<{ name: string; url:
   };
 }
 
-export type Res = { statusCode: number; json: () => any; headers: Headers };
+/** Empreinte de l'ancien format (antérieur à Beffroi RM 1.0.0 : scrypt$N$r$p$sel$empreinte, sans poivre). */
+export function legacyHash(password: string): string {
+  const salt = randomBytes(16);
+  const key = scryptSync(password, salt, 32, { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 });
+  return `scrypt$32768$8$1$${salt.toString("base64")}$${key.toString("base64")}`;
+}
+
+export type Res ={ statusCode: number; json: () => any; headers: Headers };
 
 /**
  * Client HTTP de test : conserve les cookies (session, étape MFA), pose l'en-tête anti-CSRF et

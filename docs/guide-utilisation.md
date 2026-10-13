@@ -96,6 +96,7 @@ verrous PostgreSQL.
 | `MFA_POLICY` | `required` | Second facteur des comptes locaux : `required` (tous), `admin` (administrateurs) ou `optional` |
 | `AUDIT_STDOUT` | `false` | Copie de chaque entrée du journal d'audit sur la sortie standard (JSON), pour un SIEM |
 | `RATE_LIMIT_PER_MINUTE` / `LOGIN_RATE_LIMIT_PER_MINUTE` | `600` / `20` | Requêtes d'API et tentatives de connexion par adresse IP et par minute |
+| `ALLOW_LEGACY_PASSWORD_HASHES` | `false` | Accepte les empreintes de mot de passe de l'ancien format (antérieur à Beffroi RM 1.0.0, sans poivre) et les remplace à la connexion ; actif seulement pour la valeur `true`. À n'activer que pendant la migration depuis l'ancien format, puis à retirer : ce format permet à qui écrit dans la base de contourner le poivre |
 | `LOG_LEVEL` | `info` | `error`, `warn` ou `info` |
 | `STATIC_DIR` | `web/dist` | Fichiers du client web |
 

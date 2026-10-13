@@ -7,7 +7,7 @@ import { bootstrapAdmin, buildApp, type AppContext } from "../src/app.js";
 import { loadConfig } from "../src/config.js";
 import { sha256 } from "../src/crypto.js";
 import { createPool } from "../src/db.js";
-import { Client, newUser, tempDatabase } from "./helpers.js";
+import { Client, legacyHash, newUser, tempDatabase } from "./helpers.js";
 
 /** Tests de l'API sur un vrai serveur PostgreSQL (base jetable), politique MFA par défaut (obligatoire). */
 const ADMIN_PW = "Initial-Admin-Pw-2026";
@@ -106,6 +106,29 @@ describe("authentification", () => {
     const { rows } = await ctx.db.query<{ password_hash: string }>("SELECT password_hash FROM users WHERE username = 'alice'");
     expect(rows[0].password_hash).toMatch(new RegExp(`^scrypt2\\$${ctx.keys.current.id}\\$131072\\$8\\$1\\$`));
   });
+
+  it("refuse l'ancien format d'empreinte par défaut et ne l'accepte (puis le renouvelle) qu'avec le réglage de migration", async () => {
+    const pw = "Ancien-Format-2025";
+    await ctx.db.query("INSERT INTO users (id, username, display_name, role, password_hash, must_change) VALUES ('legacy-1', 'ancien', 'Ancien', 'user', $1, FALSE)", [legacyHash(pw)]);
+    const hashOf = async () => (await ctx.db.query<{ password_hash: string }>("SELECT password_hash FROM users WHERE id = 'legacy-1'")).rows[0].password_hash;
+
+    // Réglage absent (défaut) : l'empreinte valide est refusée et n'est pas modifiée.
+    expect((await new Client(b).login("ancien", pw)).statusCode).toBe(401);
+    expect(await hashOf()).toMatch(/^scrypt\$/);
+
+    // Réglage de migration activé sur une seconde application (même base, même clé maître).
+    const migration = await buildApp({ ...ctx.config, allowLegacyPasswordHashes: true }, { db: ctx.db });
+    const second = migration.app.listen(0, "127.0.0.1");
+    try {
+      await new Promise((r) => second.once("listening", r));
+      const secondBase = `http://127.0.0.1:${(second.address() as AddressInfo).port}`;
+      const ok = await new Client(() => secondBase).login("ancien", pw);
+      expect(ok.statusCode).toBe(200);
+      expect(await hashOf()).toMatch(new RegExp(`^scrypt2\\$${ctx.keys.current.id}\\$`));
+    } finally {
+      await new Promise((r) => second.close(r));
+    }
+  }, 60_000);
 
   it("exige l'en-tête anti-CSRF sur les requêtes modifiantes", async () => {
     const r = await alice.req("POST", "/api/studies", { name: "x", protection: "NP" }, { csrf: false });
