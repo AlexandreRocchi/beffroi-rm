@@ -51,8 +51,8 @@ d'installation extraite (ou depuis le dépôt après `npm run build`).
 # Prérequis (exemple Debian 12 / Ubuntu 24.04 ; Node.js 22 : paquet de la distribution ou binaire officiel)
 apt install nodejs postgresql
 
-sha256sum -c beffroi-1.0.0.tar.gz.sha256
-tar -xzf beffroi-1.0.0.tar.gz && cd beffroi-1.0.0 && sha256sum -c SHA256SUMS
+sha256sum -c beffroi-1.1.0.tar.gz.sha256
+tar -xzf beffroi-1.1.0.tar.gz && cd beffroi-1.1.0 && sha256sum -c SHA256SUMS
 
 sudo ./deploy/linux/installer.sh            # PostgreSQL local
 sudo systemctl status beffroi               # journal : journalctl -u beffroi
@@ -128,7 +128,7 @@ Pour une base déjà exploitée (instance managée, grappe PostgreSQL interne) :
 Beffroi RM est déployée.
 
 ```bash
-docker build -t registre.interne/beffroi:1.0.0 .      # --build-arg NODE_IMAGE=… pour un miroir interne
+docker build -t registre.interne/beffroi:1.1.0 .      # --build-arg NODE_IMAGE=… pour un miroir interne
 
 # 1. Rôles, par l'administrateur de la base (une fois ; rejouable) :
 psql "postgres://postgres@bdd.interne/postgres" \
@@ -144,7 +144,7 @@ docker run --rm $DURCI \
   -e DATABASE_URL=postgres://beffroi_app@bdd.interne:5432/beffroi \
   -e DATABASE_MIGRATION_URL=postgres://beffroi_owner@bdd.interne:5432/beffroi \
   -e DATABASE_MIGRATION_PASSWORD_FILE=/run/secrets/db_owner_password \
-  registre.interne/beffroi:1.0.0 node --disable-warning=ExperimentalWarning server/dist/server.js --migrate
+  registre.interne/beffroi:1.1.0 node --disable-warning=ExperimentalWarning server/dist/server.js --migrate
 
 # 3. Application (rôle applicatif) :
 docker run -d --name beffroi --restart unless-stopped $DURCI --tmpfs /data:size=16m,uid=1000 \
@@ -155,7 +155,7 @@ docker run -d --name beffroi --restart unless-stopped $DURCI --tmpfs /data:size=
   -e DATABASE_PASSWORD_FILE=/run/secrets/db_app_password \
   -e BEFFROI_MASTER_KEY_FILE=/run/secrets/master_key \
   -e DATABASE_SSL=verify-full -e COOKIE_SECURE=true -e TRUST_PROXY=true -e AUDIT_STDOUT=true \
-  registre.interne/beffroi:1.0.0
+  registre.interne/beffroi:1.1.0
 ```
 
 Les fichiers de secrets doivent être lisibles par l'utilisateur de l'image (uid 1000) ;
@@ -170,7 +170,7 @@ CloudNativePG…), avec les rôles de `roles.sql`.
 
 ```bash
 # Image dans le registre interne (nom à reporter dans kustomization.yaml, champ images)
-docker build -t registre.interne/beffroi:1.0.0 . && docker push registre.interne/beffroi:1.0.0
+docker build -t registre.interne/beffroi:1.1.0 . && docker push registre.interne/beffroi:1.1.0
 
 # Secrets (jamais versionnés) : ./scripts/generer-secrets.sh puis
 kubectl create namespace beffroi

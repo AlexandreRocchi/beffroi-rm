@@ -1,4 +1,4 @@
-# Dossier de sécurité — Beffroi RM 1.0
+# Dossier de sécurité — Beffroi RM 1.1
 
 Ce dossier décrit la sécurité de Beffroi RM « par conception » : les menaces retenues, les mesures
 qui y répondent (et où elles se trouvent dans le code), la configuration de production, la

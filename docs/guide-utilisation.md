@@ -49,8 +49,8 @@ l'installateur Linux et les fichiers de déploiement (`deploy/`), le guide d'ins
 nomenclature logicielle et les licences. Elle s'installe sur une machine **sans accès Internet**.
 
 ```bash
-sha256sum -c beffroi-1.0.0.tar.gz.sha256        # intégrité de l'archive
-tar -xzf beffroi-1.0.0.tar.gz && cd beffroi-1.0.0
+sha256sum -c beffroi-1.1.0.tar.gz.sha256        # intégrité de l'archive
+tar -xzf beffroi-1.1.0.tar.gz && cd beffroi-1.1.0
 sha256sum -c SHA256SUMS                          # intégrité de chaque fichier
 sudo ./deploy/linux/installer.sh                 # serveur Linux ; poste d'évaluation : beffroi.sh / beffroi.cmd
 ```

@@ -158,7 +158,7 @@ describe("authentification", () => {
     const anon = (await new Client(b).req("GET", "/api/auth/me")).json();
     expect(anon.version).toBeUndefined();
     expect((await new Client(b).req("GET", "/api/health")).json()).toEqual({ ok: true });
-    expect((await alice.req("GET", "/api/auth/me")).json().version).toBe("1.0.0");
+    expect((await alice.req("GET", "/api/auth/me")).json().version).toBe("1.1.0");
   });
 });
 
