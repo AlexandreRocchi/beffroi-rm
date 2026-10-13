@@ -1,0 +1,215 @@
+
+===== PAGE 1 =====
+ 
+ 
+ 
+ 
+GUIDE EBIOS RISK MANAGER 
+FICHE METHODE 1 – Atelier 1 
+DEFINIR LE PERIMETRE METIER ET TECHNIQUE 
+ 
+ 
+ 
+Les fiches méthodes permettent aux responsables de la démarche d’analyse de risque d’identifier les 
+points essentiels d’attention en fonction de la typologie du système d’information ou des concepts 
+utilisés. 
+Elles n’ont pas vocation à remplacer les guides techniques de l’ANSSI ou les politiques de sécurité et les 
+réglementations en vigueur qui doivent être appliquées. 
+ 
+DEFINIR LE PERIMETRE 
+Se référer au point « 2.2 Définir le périmètre du système d’information » du guide de l’homologation de 
+sécurité de l’ANSSI.1  
+En voici un extrait : Dans ce cadre de responsabilité, le périmètre regroupe :  
+• 
+L’ensemble des supports physiques qui permettent de produire, collecter, stocker, traiter et 
+distribuer l’information ;  
+• 
+Les services, applications ou logiciels en charge du traitement et de l’échange de l’information ;  
+• 
+Les équipements physiques permettant l’échange d’information avec les systèmes d’information 
+connectés. Il peut s’agir d’équipements de connexion ou de supports de masse amovibles ;  
+• 
+Les ressources humaines associées au système d’information. Les utilisateurs et les administrateurs 
+du système d’information;  
+• 
+Les localisations géographiques et physiques. Il peut s’agir par exemple des salles serveurs et des 
+lieux dans lesquels peut être utilisé le système d’information ;  
+• 
+Et l’ensemble des éléments qui permettent de faire fonctionner le système d’information et sur 
+lesquels le responsable du périmètre a la maîtrise 
+RECENSER CES ELEMENTS POUR L’ANALYSE DE RISQUE 
+Le travail de recensement des missions, valeurs métier et biens supports relatifs à l’objet de l’étude peut être 
+formalisé dans une table telle que celle proposée ci-dessous : 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Il est possible d’associer un ou plusieurs biens supports à une valeur métier.  
+ 
+1 https://messervices.cyber.gouv.fr/documents-guides/guide-homologation-securite-web-04-2025.pdf pages 25 à 28 
+MISSION(S) :  
+ 
+ 
+ 
+DÉNOMINATION DE LA VALEUR MÉTIER 
+Valeur métier 1 
+Valeur métier 2 
+Valeur métier... 
+NATURE DE LA VALEUR MÉTIER (PROCESSUS OU 
+INFORMATION) 
+ 
+ 
+ 
+DESCRIPTION 
+ 
+ 
+ 
+PROPRIETAIRE : Personnel interne ou externe 
+ 
+ 
+ 
+DÉNOMINATION DU / DES BIEN(S) SUPPORT(S) (BS)  
+ASSOCIÉ(S) 
+BS a 
+BS b 
+BS a 
+BS c 
+BS d 
+... 
+DESCRIPTION 
+ 
+ 
+ 
+ 
+PROPRIETAIRE : Personnel ou équipe interne ou 
+externe 
+ 
+ 
+ 
+ 
+COLLECTION 
+GESTION DES RISQUES CYBER 
+
+
+===== PAGE 2 =====
+ 
+ 
+À chaque valeur métier et bien support correspond un propriétaire. Ce propriétaire peut être interne à 
+l’organisation ou être une partie prenante externe de l’écosystème. Les éléments relatifs à l’écosystème 
+seront repris dans le cadre de l’atelier 3. 
+Lorsqu’une cartographie existe dans l’organisation, il convient de l’utiliser comme ressource en entrée de cet 
+atelier pour déterminer les biens supports des valeurs métiers.  
+ 
+IDENTIFIER LES BIENS SUPPORT 
+Cette étape pourra vous être utile lors de la définition du périmètre (Atelier 1), de la construction des scénarios 
+opérationnels (Atelier 4) ou de la définition des mesures de sécurité (Atelier 5). 
+Les types de biens supports représentent les grandes catégories de composants d’un système d’information 
+sur lesquels reposent les valeurs métier ou les mesures de sécurité. Les biens supports peuvent être regroupés 
+selon les catégories suivantes : 
+ 
+Pour aller plus loin, vous pouvez vous reporter au guide cartographie de l’ANSSI2. 
+ 
+2 Cartographie du système d’information – guide d’élaboration en 5 étapes, ANSSI, 2018. 
+BIEN SUPPORT 
+EXEMPLES (LISTE NON-EXHAUSTIVE) 
+SYSTÈMES INFORMATIQUES ET DE TÉLÉPHONIE 
+MATÉRIELS 
+TERMINAL UTILISATEUR 
+Ordinateur fixe, ordinateur portable, tablette, téléphone mobile. 
+PÉRIPHÉRIQUE 
+Imprimante, scanner, clavier, souris, caméra, microphone, objet connecté. 
+TÉLÉPHONE 
+Téléphone fixe ou mobile analogique ou IP. 
+ÉQUIPEMENT DE STOCKAGE 
+Clé USB, disque dur, CD-ROM, carte mémoire. 
+SERVEUR 
+Mainframe, serveur lame, serveur rack. 
+MOYEN D’ADMINISTRATION 
+Poste d’administration, serveur outils d’administration, bastion. 
+ÉQUIPEMENT RÉSEAU 
+Commutateur, routeur, passerelles d’entrée depuis l’extérieur, borne WI-FI. 
+ÉQUIPEMENT DE SÉCURITÉ 
+Pare-feu, sonde (IDS/IPS), passerelle VPN. 
+ÉQUIPEMENT INDUSTRIEL 
+Automate programmable industriel, capteur, actionneur, système SCADA, système 
+instrumenté de sécurité. 
+LOGICIELS 
+SERVICE D’INFRASTRUCTURE 
+Service d’annuaire, service de gestion d’adresse IP (DHCP), service de nom de domaine 
+(DNS), contrôleur de domaine, serveur d’impression. 
+APPLICATION/SERVICE APPLICATIF 
+Serveur web, service web, serveur d’application, serveur de courrier électronique, serveur 
+de bases de données, progiciels (RH, relation client, ERP). 
+INTERGICIEL (MIDDLEWARE) 
+Entreprise Application Integration (EAI), Extract-Transform-Load (ETL), Open DataBase 
+Connectivity (ODBC). 
+SYSTÈME D’EXPLOITATION, 
+HYPERVISEUR 
+Windows, Linux, MacOS, Xen 
+MICROGICIEL (FIRMWARE) 
+Basic Input Output System (BIOS), Unified Extensible Firmware Interface (UEFI), 
+gestionnaire de composants d'un téléphone mobile, programme stocké dans une clé 
+USB équipée d'un microprocesseur. 
+LOGICIEL DE SÉCURITÉ 
+Outil de gestion d’évènements Security Information and Event Management (SIEM). 
+RÉSEAUX/CANAUX INFORMATIQUES ET DE TÉLÉPHONIE 
+RÉSEAU/CANAL INFORMATIQUE 
+Câble réseau, fibre optique, liaison radio (Wi-Fi, Bluetooth, etc.). 
+RÉSEAU/CANAL TÉLÉPHONIQUE 
+Ligne téléphonique. 
+ORGANISATIONS 
+PERSONNE 
+Employé, stagiaire, prestataire, personnel d'entretien. 
+SUPPORT PAPIER 
+Document manuscrit ou imprimé. 
+ÉCHANGE VERBAL 
+Réunion, échange informel. 
+ÉLÉMENT D'INGÉNIERIE SOCIALE 
+Information partagée sur les réseaux sociaux. 
+LOCAUX ET INSTALLATIONS PHYSIQUES 
+SITE/BÂTIMENT/SALLE 
+Siège social, usine, site de stockage, bâtiment industriel, salle de réunion, salle serveur. 
+SYSTÈME DE SÉCURITÉ PHYSIQUE 
+Système d'accès par badge, système de détection d'intrusion, système de vidéo-
+protection. 
+SYSTÈME 
+DE 
+SÛRETÉ 
+DE 
+FONCTIONNEMENT 
+Climatisation, sécurité incendie, alimentation électrique. 
+NOTE : Le périmètre du système d’information doit clairement être identifié en termes techniques, 
+fonctionnels et de responsabilités. 

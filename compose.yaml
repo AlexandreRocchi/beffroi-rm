@@ -1,0 +1,123 @@
+# Déploiement Beffroi RM en mode serveur d'équipe : application + PostgreSQL, au moindre privilège.
+#
+#   ./scripts/generer-secrets.sh          # crée ./secrets (mots de passe et clé maître)
+#   docker compose up -d --build
+#   docker compose logs beffroi           # mot de passe initial du compte « admin »
+#
+# Rôles PostgreSQL (créés au premier démarrage par deploy/postgres/roles.sql) :
+#   postgres       super-utilisateur, réservé à l'administration de la base ;
+#   beffroi_owner  propriétaire du schéma, confié au seul conteneur de migration (éphémère) ;
+#   beffroi_app    rôle de l'application : données métier, journal d'audit en ajout seul.
+# Les secrets sont montés dans /run/secrets et ne figurent jamais dans l'environnement.
+#
+# L'application écoute sur 127.0.0.1:8080 : placez devant elle un reverse proxy TLS (Nginx,
+# HAProxy) ; COOKIE_SECURE et TRUST_PROXY sont alors à « true » (valeurs par défaut ci-dessous).
+# Images de base paramétrables pour un registre interne : NODE_IMAGE, POSTGRES_IMAGE.
+
+x-hardening: &hardening
+  security_opt: ["no-new-privileges:true"]
+  restart: unless-stopped
+
+x-app-env: &app-env
+  DATABASE_URL: postgres://beffroi_app@db:5432/beffroi
+  DATABASE_PASSWORD_FILE: /run/secrets/db_app_password
+  BEFFROI_MASTER_KEY_FILE: /run/secrets/master_key
+  # Authentification multifacteur exigée pour tous les comptes locaux (required | admin | optional).
+  MFA_POLICY: ${MFA_POLICY:-required}
+  TRUST_PROXY: ${TRUST_PROXY:-true}
+  COOKIE_SECURE: ${COOKIE_SECURE:-true}
+  # Copie du journal d'audit sur la sortie standard, pour un collecteur ou un SIEM.
+  AUDIT_STDOUT: ${AUDIT_STDOUT:-true}
+  # Authentification unique OpenID Connect (facultative) : Keycloak, LemonLDAP::NG…
+  OIDC_ISSUER: ${OIDC_ISSUER:-}
+  OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+  OIDC_REDIRECT_URI: ${OIDC_REDIRECT_URI:-}
+  OIDC_ACR_VALUES: ${OIDC_ACR_VALUES:-}
+  LOCAL_LOGIN: ${LOCAL_LOGIN:-true}
+
+services:
+  db:
+    <<: *hardening
+    image: ${POSTGRES_IMAGE:-postgres:17-bookworm}
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --auth-local=peer
+    secrets: [db_admin_password, db_owner_password, db_app_password]
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./deploy/postgres/10-roles-beffroi.sh:/docker-entrypoint-initdb.d/10-roles-beffroi.sh:ro
+      - ./deploy/postgres/roles.sql:/opt/beffroi/roles.sql:ro
+    networks: [interne]
+    shm_size: 128mb
+    pids_limit: 200
+    healthcheck:
+      # Exécuté sous le compte postgres (authentification « peer ») : aucun faux échec dans le journal.
+      test: ["CMD", "gosu", "postgres", "pg_isready", "-d", "beffroi"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Migrations du schéma puis droits minimaux du rôle applicatif ; s'arrête une fois terminé.
+  migrate:
+    build:
+      context: .
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:22-bookworm-slim}
+    image: beffroi:1.1.0
+    command: ["node", "--disable-warning=ExperimentalWarning", "server/dist/server.js", "--migrate"]
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://beffroi_app@db:5432/beffroi
+      DATABASE_MIGRATION_URL: postgres://beffroi_owner@db:5432/beffroi
+      DATABASE_MIGRATION_PASSWORD_FILE: /run/secrets/db_owner_password
+    secrets: [db_owner_password]
+    networks: [interne]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+
+  beffroi:
+    <<: *hardening
+    image: beffroi:1.1.0
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      <<: *app-env
+      OIDC_CLIENT_SECRET_FILE: ${OIDC_CLIENT_SECRET_FILE:-}
+    secrets: [db_app_password, master_key]
+    ports:
+      - "${BEFFROI_BIND:-127.0.0.1}:${BEFFROI_PORT:-8080}:8080"
+    volumes:
+      - donnees:/data
+    networks: [interne, exposition]
+    # Cloisonnement : système de fichiers en lecture seule, aucune capacité Linux, ressources bornées.
+    read_only: true
+    tmpfs: ["/tmp:size=64m,mode=1777"]
+    cap_drop: [ALL]
+    pids_limit: 200
+    mem_limit: 1g
+
+secrets:
+  db_admin_password:
+    file: ./secrets/db_admin_password
+  db_owner_password:
+    file: ./secrets/db_owner_password
+  db_app_password:
+    file: ./secrets/db_app_password
+  master_key:
+    file: ./secrets/master_key
+
+networks:
+  # La base n'a aucun accès au réseau extérieur.
+  interne:
+    internal: true
+  exposition: {}
+
+volumes:
+  db: {}
+  donnees: {}

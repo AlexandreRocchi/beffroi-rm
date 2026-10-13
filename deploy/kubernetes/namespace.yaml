@@ -1,0 +1,11 @@
+# Espace de noms dédié, soumis au profil « restricted » des Pod Security Standards :
+# tout pod non conforme (root, capacités, élévation de privilèges…) est refusé.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: beffroi
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted

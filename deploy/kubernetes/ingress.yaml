@@ -1,0 +1,27 @@
+# Publication HTTPS par le contrôleur d'entrée (ici ingress-nginx). Le certificat est un secret
+# TLS « beffroi-tls » (IGC interne, cert-manager…). Réglages TLS ANSSI (TLS 1.2 et 1.3, suites
+# ECDHE AEAD) : à poser dans la ConfigMap du contrôleur (ssl-protocols, ssl-ciphers), voir
+# deploy/nginx/beffroi.conf pour les valeurs.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: beffroi
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 20m
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [beffroi.exemple.fr]
+      secretName: beffroi-tls
+  rules:
+    - host: beffroi.exemple.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: beffroi
+                port:
+                  name: http

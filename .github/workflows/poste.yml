@@ -1,0 +1,156 @@
+# Exécutables du mode poste seul (Windows, Linux) et archive du serveur d'équipe.
+# - à chaque étiquette « v* » (ex. v1.2.0) : construction, test dans un navigateur, puis
+#   publication sur la page Releases du dépôt avec les sommes de contrôle SHA-256 ;
+# - lancement manuel (onglet Actions) : construction et test, livrables en artefacts du run.
+#
+# Signature Authenticode du .exe par SignPath (étiquettes « v* » seulement), activée dès que la
+# variable SIGNPATH_ORGANIZATION_ID et le secret SIGNPATH_API_TOKEN sont définis (docs/poste-seul.md).
+# Attestation de provenance GitHub (Sigstore) de chaque livrable publié.
+name: Exécutables poste seul
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  construire:
+    name: ${{ matrix.nom }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            nom: Linux x64
+          - os: windows-latest
+            nom: Windows x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Exécutable autonome
+        run: npm run poste
+
+      # ───── signature Authenticode (Windows, release, SignPath configuré) ─────
+      - name: Exécutable à signer
+        id: a-signer
+        if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v') && vars.SIGNPATH_ORGANIZATION_ID != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: exe-a-signer
+          path: release/*.exe
+          if-no-files-found: error
+      - name: Signature SignPath
+        if: steps.a-signer.outcome == 'success'
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG || 'beffroi' }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG || 'release-signing' }}
+          artifact-configuration-slug: ${{ vars.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG || 'initial' }}
+          github-artifact-id: ${{ steps.a-signer.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: signe
+      - name: Exécutable signé et somme de contrôle
+        if: steps.a-signer.outcome == 'success'
+        shell: pwsh
+        run: |
+          foreach ($f in Get-ChildItem signe -Filter *.exe) {
+            $sig = Get-AuthenticodeSignature $f.FullName
+            if ($sig.Status -ne 'Valid') { throw "Signature invalide pour $($f.Name) : $($sig.Status)" }
+            Write-Host "$($f.Name) signé par $($sig.SignerCertificate.Subject)"
+            Copy-Item $f.FullName release/ -Force
+            $h = (Get-FileHash -Algorithm SHA256 "release/$($f.Name)").Hash.ToLower()
+            [IO.File]::WriteAllText("$PWD/release/$($f.Name).sha256", "$h  $($f.Name)`n")
+          }
+      - name: Navigateur de test
+        shell: bash
+        run: npx playwright install ${{ runner.os == 'Linux' && '--with-deps' || '' }} chromium
+      # Sous Windows, l'exécutable livré (signé le cas échéant) ; sous Linux, le binaire mis dans l'archive.
+      - name: Test de bout en bout de l'exécutable
+        shell: bash
+        run: npm run test:poste -- "$(ls release/*.exe 2>/dev/null || echo build/poste/beffroi-poste)"
+      - name: Archive du serveur d'équipe (hors ligne)
+        if: runner.os == 'Linux'
+        run: npm run package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: beffroi-${{ runner.os }}
+          path: |
+            release/*.exe
+            release/*.tar.gz
+            release/*.sha256
+          if-no-files-found: error
+
+  publier:
+    name: Publier la release
+    needs: construire
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      # Attestation de provenance (jeton OIDC du workflow, journal de transparence Sigstore).
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+      - name: Attestation de provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: |
+            release/*.exe
+            release/*.tar.gz
+      - name: Notes de version
+        env:
+          SIGNE: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+        run: |
+          cd release
+          cat *.sha256 > SHA256SUMS
+          if [ "$SIGNE" = "true" ]; then
+            SIGNATURE="L'exécutable Windows est signé (Authenticode, certificat SignPath Foundation). Pour un nouvel exécutable, SmartScreen peut encore demander une confirmation le temps que sa réputation s'établisse."
+          else
+            SIGNATURE="Les exécutables ne sont pas signés : Windows SmartScreen peut demander une confirmation (« Informations complémentaires » puis « Exécuter quand même »)."
+          fi
+          cat > notes.md <<NOTES
+          ## Téléchargements
+
+          | Livrable | Pour qui |
+          |---|---|
+          | \`$(ls beffroi-poste-*-windows-x64.exe)\` | **Poste seul, Windows** : double-cliquez, l'application s'ouvre dans le navigateur. Aucune installation, aucun compte. |
+          | \`$(ls beffroi-poste-*-linux-x64.tar.gz)\` | **Poste seul, Linux** : \`tar xzf\` puis \`./beffroi-poste\`. |
+          | \`$(ls beffroi-[0-9]*.tar.gz)\` | **Serveur d'équipe** (PostgreSQL, comptes, partage) : voir docs/installation.md. |
+
+          Mode poste seul : un utilisateur, études enregistrées sur le poste, sans collaboration
+          (détails : docs/poste-seul.md). ${SIGNATURE}
+
+          Vérification de l'intégrité : \`sha256sum -c SHA256SUMS --ignore-missing\`
+          (Windows : \`Get-FileHash -Algorithm SHA256 <fichier>\`).
+
+          Vérification de la provenance (construit par le workflow de ce dépôt, à partir de ce commit) :
+          \`gh attestation verify <fichier> --repo ${GITHUB_REPOSITORY}\`
+          NOTES
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          cd release
+          files=$(ls *.exe *.tar.gz *.sha256 SHA256SUMS)
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" $files --clobber
+          else
+            gh release create "$TAG" $files --title "Beffroi RM ${TAG#v}" --notes-file notes.md
+          fi

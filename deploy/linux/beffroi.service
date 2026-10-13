@@ -1,0 +1,71 @@
+# Beffroi RM — application (rôle PostgreSQL beffroi_app, sans droit sur le schéma).
+# Secrets fournis par systemd (LoadCredential) : lisibles par le seul service, jamais dans
+# l'environnement ni dans /etc accessible au compte de service.
+[Unit]
+Description=Beffroi RM — analyse de risques EBIOS Risk Manager
+Documentation=file:@PREFIX@/docs/installation.md
+Wants=network-online.target
+After=network-online.target postgresql.service beffroi-migrate.service
+Requires=beffroi-migrate.service
+
+[Service]
+Type=simple
+User=beffroi
+Group=beffroi
+EnvironmentFile=/etc/beffroi/beffroi.env
+LoadCredential=master_key:/etc/beffroi/credentials/master_key
+LoadCredential=db_app_password:/etc/beffroi/credentials/db_app_password
+LoadCredential=admin_initial_password:/etc/beffroi/credentials/admin_initial_password
+Environment=BEFFROI_MASTER_KEY_FILE=%d/master_key
+Environment=DATABASE_PASSWORD_FILE=%d/db_app_password
+Environment=ADMIN_INITIAL_PASSWORD_FILE=%d/admin_initial_password
+Environment=DATA_DIR=/var/lib/beffroi
+# Le rôle propriétaire est réservé à beffroi-migrate : l'application ne le connaît pas.
+UnsetEnvironment=DATABASE_MIGRATION_URL DATABASE_MIGRATION_PASSWORD_FILE
+StateDirectory=beffroi
+StateDirectoryMode=0700
+ExecStart=@NODE@ --disable-warning=ExperimentalWarning @PREFIX@/server/dist/server.js
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+
+# Durcissement (guide ANSSI « Recommandations pour la mise en place de cloisonnement système ») :
+# système de fichiers en lecture seule, aucune capacité, appels système restreints, espace de
+# noms utilisateur privé, ressources bornées. MemoryDenyWriteExecute n'est pas activé : le
+# compilateur à la volée de Node.js (V8) en a besoin.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+PrivateUsers=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged
+SystemCallErrorNumber=EPERM
+CapabilityBoundingSet=
+AmbientCapabilities=
+UMask=0077
+RemoveIPC=yes
+MemoryMax=1G
+TasksMax=200
+LimitNOFILE=8192
+# Filtrage réseau au niveau du service (facultatif) : n'autoriser que les pairs attendus —
+# reverse proxy, PostgreSQL, fournisseur OIDC. À adapter avant d'activer :
+#IPAddressDeny=any
+#IPAddressAllow=localhost 192.0.2.10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Beffroi RM — présentation</title>
+<!--
+  Vidéo de présentation de Beffroi RM (16:9, 1920 × 1080), rendue image par image par
+  scripts/video-promo.mjs : window.render(t) fixe l'état de chaque élément à l'instant t
+  (secondes), sans animation CSS, pour un rendu déterministe. Les visuels sont de vraies
+  captures de l'application (étude exemple du guide ANSSI), prises par le même script.
+-->
+<style>
+  @font-face { font-family: "Plex"; font-weight: 400; src: url("../../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Plex"; font-weight: 500; src: url("../../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-500-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Plex"; font-weight: 600; src: url("../../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-600-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Plex"; font-weight: 700; src: url("../../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-700-normal.woff2") format("woff2"); }
+  @font-face { font-family: "PlexMono"; font-weight: 500; src: url("../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2") format("woff2"); }
+
+  :root {
+    --navy: #1b2a6e; --navy-2: #2e46ad; --ink: #0e1538; --red: #e5383b;
+    --w1: #3450b4; --w2: #0e7c72; --w3: #c25e0b; --w4: #b8323a; --w5: #6c45a6;
+    --paper: #f5f6f8; --text: #161b2e; --muted: #5b6275;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #000; }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: "Plex", sans-serif; color: #fff; background: var(--ink); }
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  .bg-dark { background: radial-gradient(1400px 900px at 78% 12%, #2a3d94 0%, #16215a 45%, #0b1030 100%); }
+  .bg-light { background: linear-gradient(180deg, #f7f8fb 0%, #e9ecf4 100%); color: var(--text); }
+  .rings { position: absolute; right: -260px; bottom: -300px; width: 1100px; height: 1100px; opacity: 0.08; }
+  .eyebrow { font-weight: 700; font-size: 22px; letter-spacing: 0.14em; text-transform: uppercase; }
+  .h1 { font-weight: 700; font-size: 84px; line-height: 1.04; letter-spacing: -0.02em; margin: 0; }
+  .h2 { font-weight: 700; font-size: 62px; line-height: 1.08; letter-spacing: -0.015em; margin: 0; }
+  .lead { font-size: 30px; line-height: 1.4; font-weight: 400; opacity: 0.86; }
+  .abs { position: absolute; }
+  .will { will-change: transform, opacity; }
+
+  /* Fenêtre de navigateur autour des captures */
+  .win { position: absolute; border-radius: 14px; overflow: hidden; background: #fff; box-shadow: 0 40px 90px rgba(5, 10, 40, 0.45), 0 0 0 1px rgba(255,255,255,0.08); }
+  .bg-light .win { box-shadow: 0 30px 70px rgba(20, 30, 80, 0.22), 0 0 0 1px rgba(20,30,80,0.08); }
+  .win .bar { height: 38px; background: #eef0f5; display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid #dfe3ea; }
+  .win .bar i { width: 12px; height: 12px; border-radius: 50%; background: #d4d8e1; display: block; }
+  .win .bar span { margin-left: 14px; flex: 1; max-width: 520px; height: 24px; border-radius: 6px; background: #fff; border: 1px solid #dfe3ea; color: #5b6275; font-size: 14px; display: flex; align-items: center; padding: 0 10px; gap: 6px; }
+  .win .view { position: relative; overflow: hidden; }
+  .win img { display: block; width: 100%; transform-origin: 0 0; }
+  .win .view.fit { display: flex; justify-content: center; background: #fff; }
+  .win .view.fit img { width: auto; height: 100%; transform-origin: 50% 50%; }
+
+  .chip { display: inline-flex; align-items: center; gap: 12px; padding: 12px 22px; border-radius: 999px; font-weight: 600; font-size: 24px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); }
+  .bg-light .chip { background: #fff; border-color: #dfe3ea; color: var(--text); box-shadow: 0 6px 18px rgba(20,30,80,0.08); }
+  .ws { display: flex; align-items: center; gap: 20px; font-size: 30px; font-weight: 600; margin-bottom: 20px; }
+  .ws b { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; flex: none; }
+  .ws small { display: block; font-size: 20px; font-weight: 400; opacity: 0.7; margin-top: 2px; }
+
+  .tile { position: absolute; width: 520px; padding: 30px 32px; border-radius: 18px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14); }
+  .tile .big { font-size: 40px; font-weight: 700; letter-spacing: -0.01em; display: flex; align-items: center; gap: 16px; }
+  .tile .big svg { flex: none; }
+  .tile p { margin: 12px 0 0; font-size: 22px; line-height: 1.4; opacity: 0.78; }
+
+  .file { position: absolute; width: 170px; height: 208px; border-radius: 14px; background: #fff; color: var(--text); box-shadow: 0 20px 50px rgba(20,30,80,0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-weight: 700; font-size: 30px; }
+  .file em { font-style: normal; font-size: 17px; font-weight: 500; color: var(--muted); }
+  .file .tag { width: 88px; height: 10px; border-radius: 5px; }
+
+  .mode { position: absolute; width: 330px; height: 150px; border-radius: 16px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); padding: 24px 26px; }
+  .mode strong { display: block; font-size: 28px; margin-top: 14px; }
+  .mode span { font-size: 19px; opacity: 0.72; }
+  .mono { font-family: "PlexMono", monospace; }
+  .paper { position: absolute; width: 470px; border-radius: 6px; overflow: hidden; background: #fff; box-shadow: 0 30px 70px rgba(20, 30, 80, 0.28), 0 0 0 1px rgba(20, 30, 80, 0.08); }
+  .paper img { display: block; width: 100%; }
+  .protect { position: absolute; left: 0; right: 0; top: 0; height: 8px; background: var(--red); }
+  .foot { position: absolute; left: 110px; right: 110px; bottom: 38px; font-size: 17px; opacity: 0.55; display: flex; justify-content: space-between; }
+  .underline { position: absolute; height: 8px; border-radius: 4px; background: var(--red); transform-origin: 0 50%; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- ───────── 1. Ouverture ───────── -->
+  <section class="scene bg-dark" data-start="0" data-end="4.6">
+    <svg class="rings" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="20 6"/><circle cx="50" cy="50" r="30" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="14 5"/></svg>
+    <div class="abs will" data-in="0.2" data-anim="zoom" data-d="1.0" style="left: 810px; top: 250px; width: 300px; height: 300px;">
+      <svg viewBox="0 0 48 48" width="300" height="300"><path d="M6 5.6C6 4.7 6.7 4 7.6 4h32.8c.9 0 1.6.7 1.6 1.6V23c0 10.6-7.4 17.7-18 22C13.4 40.7 6 33.6 6 23Z" fill="#fff"/><g data-spin="-81.81 60"><circle cx="24" cy="22.5" r="10.5" fill="none" stroke="#1b2a6e" stroke-width="3.8" stroke-dasharray="10.19 3"/></g><circle cx="24" cy="22.5" r="3.6" fill="#e5383b"/></svg>
+    </div>
+    <div class="abs will" data-in="0.9" data-anim="up" style="left: 0; right: 0; top: 590px; text-align: center;">
+      <div class="h1" style="font-size: 120px;">Beffroi RM</div>
+    </div>
+    <div class="abs will" data-in="1.5" data-anim="up" style="left: 0; right: 0; top: 740px; text-align: center;">
+      <div class="lead" style="font-size: 34px;">Analyse de risques numériques · méthode EBIOS Risk Manager</div>
+    </div>
+    <div class="abs will" data-in="2.2" data-anim="fade" style="left: 0; right: 0; top: 820px; display: flex; justify-content: center; gap: 18px;">
+      <span class="chip">Souverain</span><span class="chip">Open source</span><span class="chip">Auto-hébergé</span>
+    </div>
+  </section>
+
+  <!-- ───────── 2. Accroche ───────── -->
+  <section class="scene bg-dark" data-start="4.2" data-end="9.4">
+    <div class="abs will" data-in="0.3" data-anim="up" style="left: 150px; top: 300px; width: 1600px;">
+      <div class="h2" style="font-size: 76px;">Vos analyses de risques cyber méritent mieux qu'un tableur partagé.</div>
+    </div>
+    <div class="underline will" data-in="1.4" data-anim="grow" data-d="0.8" style="left: 150px; top: 520px; width: 420px;"></div>
+    <div class="abs will" data-in="2.2" data-anim="up" style="left: 150px; top: 600px; width: 1600px;">
+      <div class="lead" style="font-size: 44px; opacity: 1;">Et vos données sensibles ne devraient <strong>jamais</strong> quitter vos murs.</div>
+    </div>
+  </section>
+
+  <!-- ───────── 3. Méthode ───────── -->
+  <section class="scene bg-light" data-start="9" data-end="15">
+    <div class="abs will" data-in="0.1" data-anim="up" style="left: 110px; top: 110px; width: 640px;">
+      <div class="eyebrow" style="color: var(--navy-2);">La méthode de l'ANSSI, guidée</div>
+      <div class="h2" style="margin-top: 16px; color: var(--text);">5 ateliers EBIOS RM, de bout en bout</div>
+    </div>
+    <div class="abs" style="left: 110px; top: 410px; color: var(--text);">
+      <div class="ws will" data-in="0.6" data-anim="left"><b style="background: var(--w1)">1</b><div>Cadrage et socle de sécurité<small>Valeurs métier, événements redoutés, référentiels</small></div></div>
+      <div class="ws will" data-in="0.9" data-anim="left"><b style="background: var(--w2)">2</b><div>Sources de risque<small>Couples SR/OV et pertinence</small></div></div>
+      <div class="ws will" data-in="1.2" data-anim="left"><b style="background: var(--w3)">3</b><div>Scénarios stratégiques<small>Écosystème, chemins d'attaque</small></div></div>
+      <div class="ws will" data-in="1.5" data-anim="left"><b style="background: var(--w4)">4</b><div>Scénarios opérationnels<small>Graphes d'attaque et vraisemblance</small></div></div>
+      <div class="ws will" data-in="1.8" data-anim="left"><b style="background: var(--w5)">5</b><div>Traitement du risque<small>Plan de mesures, risques résiduels, suivi</small></div></div>
+    </div>
+    <div class="win will" data-in="0.4" data-anim="right" style="left: 800px; top: 150px; width: 1030px;">
+      <div class="bar"><i></i><i></i><i></i><span>beffroi.exemple.fr/etudes/…/vue-ensemble</span></div>
+      <div class="view" style="height: 644px;"><img data-src="vue-ensemble" data-kb="1.22 1.34" data-pan="0 0 -4 -3" /></div>
+    </div>
+  </section>
+
+  <!-- ───────── 4. Cartographies ───────── -->
+  <section class="scene bg-dark" data-start="14.6" data-end="20">
+    <div class="abs will" data-in="0.1" data-anim="up" style="left: 110px; top: 90px;">
+      <div class="eyebrow" style="color: #9fb2ff;">Ateliers 2 et 3</div>
+      <div class="h2" style="margin-top: 14px;">Les cartographies de la menace, générées en direct</div>
+    </div>
+    <div class="win will" data-in="0.5" data-anim="up" style="left: 110px; top: 300px; width: 830px;">
+      <div class="bar"><i></i><i></i><i></i><span>Sources de risque</span></div>
+      <div class="view fit" style="height: 600px;"><img data-src="radar-sr-ov" data-kb="1 1.08" /></div>
+    </div>
+    <div class="win will" data-in="0.9" data-anim="up" style="left: 980px; top: 300px; width: 830px;">
+      <div class="bar"><i></i><i></i><i></i><span>Dangerosité de l'écosystème</span></div>
+      <div class="view fit" style="height: 600px;"><img data-src="radar-ecosysteme" data-kb="1 1.08" /></div>
+    </div>
+    <div class="abs will" data-in="1.6" data-anim="fade" style="left: 110px; top: 960px; display: flex; gap: 16px;">
+      <span class="chip">Radars de pertinence</span><span class="chip">Zones de danger et de contrôle</span><span class="chip">Mesures initiales → résiduelles</span>
+    </div>
+  </section>
+
+  <!-- ───────── 5. Scénarios et graphes d'attaque ───────── -->
+  <section class="scene bg-light" data-start="19.6" data-end="25.4">
+    <div class="abs will" data-in="0.1" data-anim="up" style="left: 110px; top: 90px;">
+      <div class="eyebrow" style="color: var(--navy-2);">Ateliers 3 et 4</div>
+      <div class="h2" style="margin-top: 14px; color: var(--text);">Du scénario stratégique au graphe d'attaque coté</div>
+    </div>
+    <div class="win will" data-in="0.5" data-anim="left" style="left: 110px; top: 280px; width: 780px;">
+      <div class="bar"><i></i><i></i><i></i><span>Scénario stratégique</span></div>
+      <div class="view" style="background: #fff;"><img data-src="schema" data-kb="1 1.04" /></div>
+    </div>
+    <div class="abs will" data-in="1.0" data-anim="left" style="left: 110px; top: 690px; width: 740px; color: var(--text); font-size: 30px; line-height: 1.5;">
+      Glissez les parties prenantes, reliez les actions élémentaires : <strong>la vraisemblance se calcule toute seule</strong> (méthodes expresse, standard ou avancée).
+    </div>
+    <div class="win will" data-in="0.7" data-anim="right" style="left: 940px; top: 250px; width: 890px;">
+      <div class="bar"><i></i><i></i><i></i><span>Graphe d'attaque</span></div>
+      <div class="view fit" style="height: 700px;"><img data-src="graphe" data-kb="1.1 1.3" /></div>
+    </div>
+  </section>
+
+  <!-- ───────── 6. Traitement du risque ───────── -->
+  <section class="scene bg-dark" data-start="25" data-end="30.4">
+    <div class="abs will" data-in="0.1" data-anim="up" style="left: 110px; top: 90px;">
+      <div class="eyebrow" style="color: #d6b8ff;">Atelier 5</div>
+      <div class="h2" style="margin-top: 14px;">Du risque initial au risque résiduel</div>
+    </div>
+    <div class="win will" data-in="0.5" data-anim="zoom" style="left: 110px; top: 350px; width: 1150px;">
+      <div class="bar"><i></i><i></i><i></i><span>Risques initiaux → résiduels</span></div>
+      <div class="view"><img data-src="matrices" /></div>
+    </div>
+    <div class="abs" style="left: 1320px; top: 420px; width: 520px;">
+      <div class="ws will" data-in="1.0" data-anim="right"><b style="background: var(--w5)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></b><div>Stratégie par risque<small>Réduire, accepter, transférer, refuser</small></div></div>
+      <div class="ws will" data-in="1.3" data-anim="right"><b style="background: var(--w5)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></b><div>Glisser-déposer<small>Réévaluation sur la matrice</small></div></div>
+      <div class="ws will" data-in="1.6" data-anim="right"><b style="background: var(--w5)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 3"/></svg></b><div>Plan et suivi<small>Échéances, indicateurs, comités</small></div></div>
+    </div>
+  </section>
+
+  <!-- ───────── 7. Livrables ───────── -->
+  <section class="scene bg-light" data-start="30" data-end="35.4">
+    <div class="abs will" data-in="0.1" data-anim="up" style="left: 110px; top: 110px; width: 820px;">
+      <div class="eyebrow" style="color: var(--navy-2);">Livrables</div>
+      <div class="h2" style="margin-top: 14px; color: var(--text); font-size: 58px;">Le rapport complet, en un clic</div>
+      <div class="lead" style="margin-top: 24px; color: var(--muted); opacity: 1;">Visuels embarqués, mention de protection sur chaque page. Générés dans le navigateur : <strong style="color: var(--text)">rien ne transite par un service tiers.</strong></div>
+    </div>
+    <div class="file will" data-in="0.7" data-anim="up" style="left: 110px; top: 620px;"><div class="tag" style="background: #c62828"></div>PDF<em>Rapport figé</em></div>
+    <div class="file will" data-in="0.9" data-anim="up" style="left: 310px; top: 620px;"><div class="tag" style="background: #2b579a"></div>Word<em>Modifiable</em></div>
+    <div class="file will" data-in="1.1" data-anim="up" style="left: 510px; top: 620px;"><div class="tag" style="background: #217346"></div>Excel<em>Un onglet / activité</em></div>
+    <div class="file will" data-in="1.3" data-anim="up" style="left: 710px; top: 620px;"><div class="tag" style="background: #6b7285"></div>JSON<em>Sauvegarde</em></div>
+    <!-- Vraies pages du rapport PDF généré par Beffroi RM pour l'étude exemple. -->
+    <div class="paper will" data-in="0.9" data-anim="up" data-base="rotate(7deg)" style="left: 1370px; top: 170px;"><img data-src="rapport-13" /></div>
+    <div class="paper will" data-in="0.6" data-anim="up" data-base="rotate(1.5deg)" style="left: 1170px; top: 130px;"><img data-src="rapport-02" /></div>
+    <div class="paper will" data-in="0.3" data-anim="up" data-base="rotate(-5deg)" style="left: 960px; top: 190px;"><img data-src="rapport-01" /></div>
+  </section>
+
+  <!-- ───────── 8. Souveraineté ───────── -->
+  <section class="scene bg-dark" data-start="35" data-end="43">
+    <div class="protect"></div>
+    <svg class="rings" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="20 6"/><circle cx="50" cy="50" r="30" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="14 5"/></svg>
+    <div class="abs will" data-in="0.1" data-anim="up" style="left: 110px; top: 90px;">
+      <div class="eyebrow" style="color: #ff8f91;">Souveraineté</div>
+      <div class="h2" style="margin-top: 14px;">Vos données restent chez vous. Point.</div>
+    </div>
+    <div class="tile will" data-in="0.5" data-anim="up" style="left: 110px; top: 330px;"><div class="big"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ff8f91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9H14v-6h-4v6H3z"/></svg>100 % auto-hébergé</div><p>Sur vos serveurs, dans votre réseau. Aucun compte chez un éditeur.</p></div>
+    <div class="tile will" data-in="0.7" data-anim="up" style="left: 700px; top: 330px;"><div class="big"><span class="mono" style="color: #ff8f91; font-size: 46px;">0</span>requête sortante</div><p>Ni télémétrie, ni CDN, ni police ou script tiers. Vérifié à chaque test.</p></div>
+    <div class="tile will" data-in="0.9" data-anim="up" style="left: 1290px; top: 330px;"><div class="big"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ff8f91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4"/></svg>Chiffré au repos</div><p>Études chiffrées en AES-256-GCM, clé maître qui ne quitte pas votre infrastructure.</p></div>
+    <div class="tile will" data-in="1.1" data-anim="up" style="left: 110px; top: 660px;"><div class="big"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ff8f91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Hors ligne</div><p>Archive d'installation vérifiée, fonctionne sans aucun accès Internet.</p></div>
+    <div class="tile will" data-in="1.3" data-anim="up" style="left: 700px; top: 660px;"><div class="big"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ff8f91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/></svg>Sécurisé par conception</div><p>MFA exigé, journal d'audit scellé, besoin d'en connaître, moindre privilège.</p></div>
+    <div class="tile will" data-in="1.5" data-anim="up" style="left: 1290px; top: 660px;"><div class="big"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ff8f91" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>Socle du SILL</div><p>Node.js, PostgreSQL, Svelte : des briques libres recommandées par l'État.</p></div>
+  </section>
+
+  <!-- ───────── 9. Open source et déploiement ───────── -->
+  <section class="scene bg-dark" data-start="42.6" data-end="49">
+    <div class="abs will" data-in="0.1" data-anim="up" style="left: 110px; top: 110px; width: 1100px;">
+      <div class="eyebrow" style="color: #9fb2ff;">Open source</div>
+      <div class="h2" style="margin-top: 14px;">Code ouvert, auditable, sans dépendance à un éditeur</div>
+    </div>
+    <div class="abs will" data-in="0.6" data-anim="zoom" style="left: 1320px; top: 100px; width: 490px; height: 250px; border-radius: 20px; background: #fff; color: var(--text); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <div style="font-size: 26px; font-weight: 600; color: var(--muted);">Licence</div>
+      <div style="font-size: 64px; font-weight: 700; letter-spacing: -0.02em;">Apache 2.0</div>
+    </div>
+    <div class="abs will" data-in="1.0" data-anim="fade" style="left: 110px; top: 400px; font-size: 30px;">
+      <span class="mono" style="font-size: 54px; font-weight: 500; color: #9fb2ff;" data-count="0 242">242</span>
+      <span style="opacity: 0.8;">&nbsp;composants libres inventoriés (SBOM CycloneDX), licences permissives</span>
+    </div>
+    <div class="abs will" data-in="1.2" data-anim="fade" style="left: 110px; top: 520px; font-size: 26px; opacity: 0.7;">Déployez-le comme vous voulez :</div>
+    <div class="mode will" data-in="1.4" data-anim="up" style="left: 110px; top: 580px;"><span class="mono">systemd</span><strong>Linux natif</strong><span>Unités durcies, installateur</span></div>
+    <div class="mode will" data-in="1.6" data-anim="up" style="left: 470px; top: 580px;"><span class="mono">compose.yaml</span><strong>Docker Compose</strong><span>Base incluse, lecture seule</span></div>
+    <div class="mode will" data-in="1.8" data-anim="up" style="left: 830px; top: 580px;"><span class="mono">kustomize</span><strong>Kubernetes</strong><span>Profil « restricted »</span></div>
+    <div class="mode will" data-in="2.0" data-anim="up" style="left: 1190px; top: 580px;"><span class="mono">.tar.gz</span><strong>Poste hors ligne</strong><span>Linux, macOS, Windows</span></div>
+    <div class="abs will" data-in="2.4" data-anim="fade" style="left: 110px; top: 800px; display: flex; gap: 16px;">
+      <span class="chip">Nginx / HAProxy · TLS ANSSI</span><span class="chip">OpenID Connect · Keycloak, LemonLDAP::NG</span><span class="chip">Documentation illustrée intégrée</span>
+    </div>
+  </section>
+
+  <!-- ───────── 10. Conclusion ───────── -->
+  <section class="scene bg-dark" data-start="48.6" data-end="57" data-last>
+    <svg class="rings" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="20 6"/><circle cx="50" cy="50" r="30" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="14 5"/></svg>
+    <div class="win will" data-in="0.6" data-anim="right" style="left: 1010px; top: 130px; width: 850px;">
+      <div class="bar"><i></i><i></i><i></i><span>Carte de la menace</span></div>
+      <div class="view"><img data-src="flux-menace" data-kb="1 1.04" /></div>
+    </div>
+    <div class="win will" data-in="0.9" data-anim="up" style="left: 1130px; top: 560px; width: 700px;">
+      <div class="bar"><i></i><i></i><i></i><span>Risques initiaux → résiduels</span></div>
+      <div class="view"><img data-src="matrices" /></div>
+    </div>
+    <div class="abs will" data-in="0.1" data-anim="zoom" style="left: 110px; top: 190px;">
+      <svg viewBox="0 0 48 48" width="150" height="150"><path d="M6 5.6C6 4.7 6.7 4 7.6 4h32.8c.9 0 1.6.7 1.6 1.6V23c0 10.6-7.4 17.7-18 22C13.4 40.7 6 33.6 6 23Z" fill="#fff"/><circle cx="24" cy="22.5" r="10.5" fill="none" stroke="#1b2a6e" stroke-width="3.8" stroke-dasharray="10.19 3" transform="rotate(-81.81 24 22.5)"/><circle cx="24" cy="22.5" r="3.6" fill="#e5383b"/></svg>
+    </div>
+    <div class="abs will" data-in="0.3" data-anim="up" style="left: 110px; top: 370px; width: 760px;">
+      <div class="h1" style="font-size: 110px;">Beffroi RM</div>
+      <div class="lead" style="margin-top: 16px; font-size: 36px; opacity: 1;">Vos risques. Vos serveurs.<br />Votre maîtrise.</div>
+    </div>
+    <div class="abs will" data-in="1.0" data-anim="fade" style="left: 110px; top: 690px; display: flex; flex-wrap: wrap; gap: 14px; width: 760px;">
+      <span class="chip">Souverain</span><span class="chip">Open source</span><span class="chip">Hors ligne</span>
+    </div>
+    <div class="abs will" data-in="1.4" data-anim="fade" id="cta" style="left: 110px; top: 800px; width: 860px; font-size: 28px; font-weight: 600;"></div>
+    <div class="foot will" data-in="1.6" data-anim="fade"><span>EBIOS est une marque déposée du SGDSN. Beffroi RM est un logiciel indépendant, non labellisé par l'ANSSI.</span><span>Visuels : étude exemple du guide EBIOS RM</span></div>
+  </section>
+</div>
+
+<script>
+  const q = new URLSearchParams(location.search);
+  const VIS = q.get("visuels") ?? "visuels/";
+  const cta = document.getElementById("cta");
+  cta.textContent = q.get("url") ?? "Licence Apache 2.0 · méthode EBIOS Risk Manager";
+
+  for (const img of document.querySelectorAll("img[data-src]")) img.src = `${VIS}${img.dataset.src}.jpg`;
+
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const ease = (x) => 1 - Math.pow(1 - x, 3);
+  const inout = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+  const FADE = 0.45;
+  const scenes = [...document.querySelectorAll(".scene")].map((el) => ({ el, start: +el.dataset.start, end: +el.dataset.end, last: el.hasAttribute("data-last") }));
+  window.DURATION = Math.max(...scenes.map((s) => s.end));
+
+  /** État de toute la composition à l'instant t (secondes). */
+  window.render = (t) => {
+    for (const s of scenes) {
+      const local = t - s.start;
+      const len = s.end - s.start;
+      // Fondu enchaîné : chaque scène (fond opaque) apparaît par-dessus la précédente, qui reste
+      // nette jusqu'à être entièrement recouverte, puis disparaît.
+      const o = t > s.end ? 0 : s.start === 0 ? 1 : clamp(local / FADE);
+      s.el.style.opacity = o;
+      s.el.style.visibility = o > 0 ? "visible" : "hidden";
+      if (o <= 0) continue;
+      for (const e of s.el.querySelectorAll("[data-in]")) {
+        const p = ease(clamp((local - +e.dataset.in) / (+(e.dataset.d ?? 0.8))));
+        const a = e.dataset.anim;
+        const base = e.dataset.base ?? "";
+        if (a === "up") e.style.transform = `${base} translateY(${(1 - p) * 46}px)`;
+        else if (a === "left") e.style.transform = `${base} translateX(${(1 - p) * -60}px)`;
+        else if (a === "right") e.style.transform = `${base} translateX(${(1 - p) * 80}px)`;
+        else if (a === "zoom") e.style.transform = `${base} scale(${0.9 + 0.1 * p})`;
+        else if (a === "grow") e.style.transform = `scaleX(${p})`;
+        e.style.opacity = a === "grow" ? 1 : p;
+        if (e.dataset.count) {
+          const [from, to] = e.dataset.count.split(" ").map(Number);
+          e.textContent = String(Math.round(from + (to - from) * p));
+        }
+      }
+      // Captures : lent travelling (zoom et déplacement) sur toute la durée de la scène.
+      for (const img of s.el.querySelectorAll("img[data-kb]")) {
+        const k = inout(clamp(local / len));
+        const [z0, z1] = img.dataset.kb.split(" ").map(Number);
+        const [x0, y0, x1, y1] = (img.dataset.pan ?? "0 0 0 0").split(" ").map(Number);
+        img.style.transform = `translate(${x0 + (x1 - x0) * k}%, ${y0 + (y1 - y0) * k}%) scale(${z0 + (z1 - z0) * k})`;
+      }
+      for (const g of s.el.querySelectorAll("[data-spin]")) {
+        const [r0, dr] = g.dataset.spin.split(" ").map(Number);
+        g.setAttribute("transform", `rotate(${r0 + dr * ease(clamp(local / 2.2))} 24 22.5)`);
+      }
+    }
+  };
+
+  /** Prêt quand polices et visuels sont chargés et décodés. */
+  window.ready = Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.decode().catch(() => { throw new Error(`visuel manquant : ${i.src}`); }))]);
+  window.render(q.has("t") ? +q.get("t") : 0);
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Configuration d'artefact SignPath du projet Beffroi RM (à recopier dans le projet SignPath,
+  « Artifact configurations »). L'artefact soumis par le workflow .github/workflows/poste.yml est
+  l'archive ZIP créée par actions/upload-artifact : elle contient l'exécutable Windows du mode poste
+  seul, signé en Authenticode (SHA-256, horodaté par SignPath).
+-->
+<artifact-configuration xmlns="http://signpath.io/artifact-configuration/v1">
+  <zip-file>
+    <pe-file path="beffroi-poste-*-windows-x64.exe" max-matches="1">
+      <authenticode-sign />
+    </pe-file>
+  </zip-file>
+</artifact-configuration>

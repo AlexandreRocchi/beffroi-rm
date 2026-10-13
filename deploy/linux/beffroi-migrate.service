@@ -1,0 +1,45 @@
+# Beffroi RM — migration du schéma de la base, avec le rôle propriétaire (beffroi_owner).
+# Seule cette unité reçoit le mot de passe du propriétaire ; le service applicatif ne le voit jamais.
+[Unit]
+Description=Beffroi RM — migration du schéma PostgreSQL
+Documentation=file:@PREFIX@/docs/installation.md
+Wants=network-online.target
+After=network-online.target postgresql.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+User=beffroi
+Group=beffroi
+EnvironmentFile=/etc/beffroi/beffroi.env
+LoadCredential=db_owner_password:/etc/beffroi/credentials/db_owner_password
+Environment=DATABASE_MIGRATION_PASSWORD_FILE=%d/db_owner_password
+ExecStart=@NODE@ --disable-warning=ExperimentalWarning @PREFIX@/server/dist/server.js --migrate
+
+# Durcissement (voir beffroi.service).
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+PrivateUsers=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged
+SystemCallErrorNumber=EPERM
+CapabilityBoundingSet=
+AmbientCapabilities=
+UMask=0077
+RemoveIPC=yes

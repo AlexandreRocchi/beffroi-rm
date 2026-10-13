@@ -1,0 +1,40 @@
+{
+  "name": "beffroi",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Application web d'analyse de risques selon la méthode EBIOS Risk Manager (ANSSI)",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "workspaces": [
+    "shared",
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run build -w web && npm run build -w server",
+    "start": "node --disable-warning=ExperimentalWarning server/dist/server.js",
+    "test": "vitest run",
+    "typecheck": "tsc -p shared --noEmit && tsc -p server --noEmit && npm run check -w web",
+    "lint": "npm run typecheck",
+    "test:e2e": "node e2e/smoke.mjs",
+    "docs:screenshots": "node scripts/screenshots.mjs && node scripts/captures-documentation.mjs",
+    "promo": "node scripts/video-promo.mjs",
+    "package": "npm run build && node scripts/package.mjs",
+    "test:offline": "npm run package && sh scripts/test-hors-ligne.sh",
+    "poste": "npm run build -w web && node scripts/poste.mjs",
+    "test:poste": "node scripts/test-poste.mjs",
+    "dev:poste": "npm run build -w web && tsx server/src/poste.ts",
+    "audit:deps": "npm audit --omit=dev"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "playwright": "^1.63.0",
+    "postject": "^1.0.0-alpha.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@beffroi/server",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --disable-warning=ExperimentalWarning src/server.ts",
+    "build": "esbuild src/server.ts --bundle --platform=node --format=esm --target=node22 --outfile=dist/server.js --alias:@beffroi/shared=../shared/src/index.ts --legal-comments=external --metafile=modules.json --external:pg-native --banner:js=\"import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);\""
+  },
+  "dependencies": {
+    "@beffroi/shared": "*",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "openid-client": "^6.8.8",
+    "pg": "^8.23.0",
+    "qrcode-generator": "^2.0.4",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.6",
+    "@types/pg": "^8.23.1",
+    "esbuild": "^0.25.10",
+    "tsx": "^4.20.6"
+  }
+}

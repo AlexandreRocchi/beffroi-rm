@@ -1,0 +1,25 @@
+# Beffroi RM sur Kubernetes : kubectl apply -k deploy/kubernetes
+# Prérequis et procédure complète : docs/installation.md, § Kubernetes.
+#   - PostgreSQL existant (service managé, opérateur CloudNativePG…) avec les rôles de deploy/postgres/roles.sql ;
+#   - secrets « beffroi-app » et « beffroi-migration » créés à part (jamais versionnés) ;
+#   - image construite depuis le Dockerfile et poussée dans votre registre.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: beffroi
+resources:
+  - namespace.yaml
+  - serviceaccount.yaml
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml
+  - networkpolicy.yaml
+  - ingress.yaml
+images:
+  - name: beffroi
+    newName: registre.interne/beffroi
+    newTag: "1.1.0"
+labels:
+  - pairs:
+      app.kubernetes.io/name: beffroi
+      app.kubernetes.io/part-of: beffroi
+    includeSelectors: false

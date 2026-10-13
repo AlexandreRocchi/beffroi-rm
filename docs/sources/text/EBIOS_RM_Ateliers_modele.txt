@@ -1,0 +1,457 @@
+
+##### SHEET Organisation (6x8)
+EBIOS RISK MANAGER | DSI | RSSI | Métier | Direction | Spécialiste Threat Intel | Architecte fonctionnel | Architecte technique
+Atelier 1 |  |  |  |  |  |  | 
+Atelier 2 |  |  |  |  |  |  | 
+Atelier 3 |  |  |  |  |  |  | 
+Atelier 4 |  |  |  |  |  |  | 
+Atelier 5 |  |  |  |  |  |  | 
+
+##### SHEET Métriques (15x38)
+Besoins de sécurité |  |  |  |  |  | Gravité |  |  | Vraissemblance |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | Cotation des critères de menaces des parties prenantes |  |  |  |  |  |  |  |  |  |  |  | 
+Niveau | Disponibilité | Intégrité | Confidentialité | Tracabilité | Besoins de sécurité | G4 | Incapacité pour la société d’assurer tout ou partie de son activité, avec d’éventuels impacts graves sur la sécurité des personnes et des biens. La société ne surmontera vraisemblablement pas la situation (sa survie est menacée). | Gravité | 1 | La source de risque a très peu de chance d'atteindre son objectif visé en empruntant un des modes opératoires. |  |  |  |  |  |  | Vraissemblance |  | Niveau | Niveau de risque |  |  |  | Evaluation du risque | Niveau | Dépendance | Pénétration | Maturité SSI | Confiance | Parties prenantes |  | Niveau | Description |  |  |  | Couples SROV
+1 | Pas de disponibilité requise | Pas d'intégrité nécéssaire | Le bien est accessible publiquement | Pas de tracabilité nécéssaire |  | G3 | Forte dégradation des performances de l’activité, avec d’éventuels impacts significatifs sur la sécurité des personnes et des biens. La société surmontera la situation avec de sérieuses difficultés (fonctionnement en mode très dégrade). |  | 2 | La source de risqueest susceptible d'atteindre son objectif visé en empruntant un des modes opératoires. |  |  |  |  |  |  |  |  | 1 | Faible |  |  |  |  | 1 | Relation non nécessaire aux fonctions stratégiques | Pas d’accès ou accès avec privilèges de type utilisateur à des terminaux utilisateurs (poste de travail, ordiphone, etc.). | Des règles d’hygiène sont appliquées ponctuellement et non formalisées. La capacité de réaction sur incident est incertaine. | Les intentions de la partie prenante ne peuvent être évaluées. |  |  | 1 | Faible |  |  |  | 
+2 | Le bien ne peut être indisponible plus d'une semaine | L'intégrité doit être connue | L'accès doit être limité aux employés uniquement | Tracabilité nécéssaire pour des besoins de qualité ou techniques |  | G2 | Dégradation des performances de l’activité sans impact sur la sécurité des personnes et des biens. La société surmontera la situation malgré quelques difficultés (fonctionnement en mode dégrade). |  | 3 | La source de risque va probalement atteindre son objectif visé en empruntant un des modes opératoires. |  |  |  |  |  |  |  |  | 2 | Significatif |  |  |  |  | 2 | Relation utile aux fonctions stratégiques | Accès avec privilèges de type administrateur à des terminaux utilisateurs (parc informatique, flotte de terminaux mobiles, etc.) ou accès physique aux sites de l’organisation. | Les règles d’hygiène et la réglementation sont prises en compte, sans intégration dans une politique globale. La sécurité numérique est conduite selon un mode réactif. | Les intentions de la partie prenante sont considérées comme neutres. |  |  | 2 | Moyen |  |  |  | 
+3 | Le bien ne peut être indisponible plus d'une journée | L'intégrité doit être connue et récupérable | L'accès doit être limité à un groupe restreint d'employés uniquement | Tracabilité nécéssaire pour des besoins métiers ou contractuels |  | G1 | Aucun impact opérationnel ni sur les performances de l’activité ni sur la sécurité des personnes et des biens. La société surmontera la situation sans trop de difficultés (consommation des marges). |  | 4 | La source de risque va certainement atteindre son objectif visé en empruntant un des modes opératoires. |  |  |  |  |  |  |  |  | 3 | Modéré |  |  |  |  | 3 | Relation indispensable mais non exclusive | Accès avec privilèges de type administrateur à des serveurs « métier » (serveur de fichiers, bases de données, serveur web, serveur d’application, etc.). | Une politique globale est appliquée en matière de sécurité numérique. Celle-ci est assurée selon un mode réactif, avec une recherche de centralisation et d’anticipation sur certains risques. | Les intentions de la partie prenante sont connues et probablement positives. |  |  | 3 | Elevé |  |  |  | 
+4 | Le bien ne peut être indisponible plus d'une heure | L'intégrité doit être garantie | L'accès doit être interdit pour tous. | Tracabilité nécéssaire pour des besoins légaux ou reglementaires |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 4 | Elevé |  |  |  |  | 4 | Relation indispensable et unique (pas de substitution possible à court terme) | Accès avec privilèges de type administrateur à des équipements d’infrastructure (annuaires, DNS, DHCP, commutateurs, pare-feu, hyperviseurs, baies de stockage, etc.) ou accès physique aux salles serveurs de l’organisation. | La partie prenante met en oeuvre une politique de management du risque. La politique est intégrée et prend pleinement en compte une dimension proactive. | Les intentions de la partie prenante sont parfaitement connues et pleinement compatibles avec celles de l’organisation étudiée. |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  | Vraissemblance |  | Facilité d'exploitation |  |  |  |  | Niveau de risque |  | Vraissemblance |  |  |  |  |  |  |  |  |  |  | Pertinence |  | Motivation |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  | 1 | 2 | 3 | 4 |  |  |  | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  |  | + | ++ | +++ |  | 
+ |  |  |  |  |  |  |  |  |  |  | Probabilité | 1 | 1 | 2 | 2 | 3 |  | Gravité | 1 | 1 | 2 | 2 | 3 |  |  |  |  |  |  |  | Ressources | +++ | Moyen | Elevé | Elevé |  | 
+ |  |  |  |  |  |  |  |  |  |  |  | 2 | 2 | 2 | 3 | 3 |  |  | 2 | 2 | 2 | 3 | 3 |  |  |  |  |  |  |  |  | ++ | Faible | Moyen | Elevé |  | 
+ |  |  |  |  |  |  |  |  |  |  |  | 3 | 2 | 3 | 3 | 4 |  |  | 3 | 2 | 3 | 3 | 4 |  |  |  |  |  |  |  |  | + | Faible | Faible | Moyen |  | 
+ |  |  |  |  |  |  |  |  |  |  |  | 4 | 3 | 3 | 4 | 4 |  |  | 4 | 3 | 3 | 4 | 4 |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+
+##### SHEET Atelier 1 - Missions (8x14)
+Missions |  |  |  |  |  |  |  |  |  |  |  |  | 
+Dénomination de la valeur métier |  |  |  |  |  |  |  |  |  |  |  |  | 
+Nature de la valeur métier(processus ou information) | processus |  |  |  |  | information | processus |  | information |  |  | processus | 
+Description |  |  |  |  |  |  |  |  |  |  |  |  | 
+Entité ou personne responsable(INTERNE/EXTERNE) |  |  |  |  |  |  |  |  |  |  |  |  | 
+Dénomination du/des biens supports associés |  |  |  |  |  |  |  |  |  |  |  |  | 
+Description |  |  |  |  |  |  |  |  |  |  |  |  | 
+Entité ou personne responsable(INTERNE/EXTERNE) |  |  |  |  |  |  |  |  |  |  |  |  | 
+
+##### SHEET Atelier 1 - ER (9x4)
+Identification |  | Cotation | 
+Valeur métier | Evenement redouté | Impact | Gravité
+
+##### SHEET Atelier 1 - GAP (8x5)
+Identification |  | Cotation |  | 
+Type de référentiel | Nom du referentiel | Etat d'application | Ecarts | Justification des écarts
+
+##### SHEET Atelier 2 - SROV (6x8)
+Identification |  | Cotation |  | Evaluation |  |  | 
+Sources de risque | Objectifs visés | Motivation | Ressources | Pertinence du couple SR/OV | Priorité | Retenu | Justification de l'exclusion du couple SR/OV
+ |  | +++ | + | Moyenne | 2 | OUI | 
+ |  | +++ | +++ | Elevée | 1 | OUI | 
+ |  | ++ | + | Faible | 0 | NON | 
+ |  | + | ++ | Faible | 0 | NON | 
+
+##### SHEET Atelier 3 - PP (10x9)
+Catégories | Parties prenantes | Dépendance | Pénétration | Maturité | Confiance | Exposition | Niveau SSI | Indice de menace
+ |  |  |  |  |  | 0 | 0 | #DIV/0!
+ |  |  |  |  |  | 0 | 0 | #DIV/0!
+ |  |  |  |  |  | 0 | 0 | #DIV/0!
+ |  |  |  |  |  | 0 | 0 | #DIV/0!
+ |  |  |  |  |  | 0 | 0 | #DIV/0!
+ |  |  |  |  |  | 0 | 0 | #DIV/0!
+ |  |  |  |  |  | 0 | 0 | #DIV/0!
+ |  |  |  |  |  | 0 | 0 | #DIV/0!
+ |  |  |  |  |  | 0 | 0 | #DIV/0!
+
+##### SHEET Atelier 3 - Carto PP (40x10)
+ |  | Zone veille | Zone CTRL | Zone ALRT | Cercle 1 | Cercle 2 | Cercle 3 | Cercle 4 | Cercle 5
+ |  | 0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4
+
+##### SHEET Atelier 3 - SS (10x5)
+Sources de risques | Objectifs visés | Chemins d'attaque stratégiques | Gravité | 
+Concurrent | Voler des informations en espoinnant les travaux de R&D en vue d'obtenir un avantage concurrentiel. | Un concurrent vole des informations de recherches en créant un canal d'exfiltration de données :
+1. portant directement sur le SI de la R&D
+2. sur le SI du laboratoire (P3), qui détient une partie des travaux
+3. passant par le prestataire informatique F3. | 3. grave | Exemple
+
+##### SHEET Atelier 3 - SS1 (1x1)
+
+##### SHEET Atelier 4 - SO (10x2)
+Chemin d'attaque stratégique associé au scénario opérationnel | Vraissemblance globale
+Un concurrent vole des informations de recherche en créant un canal d'exfiltration de données portant directement sur le système d'information de la R&D. | V3 - Très vraissemblable
+
+##### SHEET Atelier 4 - SO1 (1x1)
+
+##### SHEET Atelier 5 - Risques (6x12)
+Index | Risque | Risque | Traitement | Sources 
+de risque | Objectifs visés | Evennements
+ redoutés | Scénarios stratégiques | Chemin d'attaque | Gravité | Scénarios opérationnels | Vraisemblance
+R1 | Un concurrent vole des informations de R&D grâce a un canal d’exfiltration direct | Elevé | Réduire | Concurrent | Voler des informations en espionnant les travaux de R&D en vue d’obtenir un avantage concurrentiel. | Fuite des informations d’études et
+recherches de l’entreprise | SS1 | CH1 | 3 | SO1 | 3
+R2 | Un concurrent vole des informations de R&D en exfiltrant celles détenues par le laboratoire | Moyen | Réduire | Concurrent | Voler des informations en espionnant les travaux de R&D en vue d’obtenir un avantage concurrentiel. | Fuite des informations d’études et
+recherches de l’entreprise | SS1 | CH2 | 3 | SO2 | 2
+R3 | Un concurrent vole des informations de R&D grâce a un canal d’exfiltration via le prestataire informatique | Elevé | Réduire | Concurrent | Voler des informations en espionnant les travaux de R&D en vue d’obtenir un avantage concurrentiel. | Fuite des informations d’études et
+recherches de l’entreprise | SS1 | CH3 | 3 | SO3 | 4
+R4 | Un hacktiviste provoque un arrêt de la production des vaccins en compromettant l’équipement de maintenance du fournisseur de matériel | Moyen | Réduire | Hacktiviste | Saboter la prochaine campagne nationale de vaccination en perturbant la production ou la distribution des vaccins, pour générer un choc psychologique sur la population et discréditer les pouvoirs publics. | Interruption de la production ou de la distribution de vaccins pendant plus d’une semaine pendant un pic d’épidémie | SS2 | CH1 | 4 | SO4 | 2
+R5 | Un hacktiviste perturbe la distribution de vaccins en modifiant leur étiquetage | Moyen | Réduire | Hacktiviste | Saboter la prochaine campagne nationale de vaccination en perturbant la production ou la distribution des vaccins, pour générer un choc psychologique sur la population et discréditer les pouvoirs publics. | Interruption de la production ou de la distribution de vaccins pendant plus d’une semaine pendant un pic d’épidémie | SS2 | CH2 | 4 | SO5 | 1
+
+##### SHEET Feuil1 (1x1)
+
+##### SHEET datacartoPP (361x17)
+Série 1 | Série 2 | Série 3 | Cercle 1 | Cercle 2 | Cercle 3 | Cercle 4 | Cercle 5 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+0 | 0.9 | 3 | 0 | 1 | 2 | 3 | 4 |  |  |  |  |  |  |  |  | 
+Pour redimensionner la plage de données du graphique, faites glisser le coin inférieur droit de la plage. |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
