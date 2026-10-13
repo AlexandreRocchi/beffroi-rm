@@ -1,0 +1,57 @@
+# Vérifications avant fusion : typecheck, tests (avec PostgreSQL), build et parcours complet dans
+# un navigateur. S'exécute sur chaque pull request vers main ou dev et sur chaque push sur dev.
+# Le job « Tests » est la vérification à exiger avant de fusionner dans main.
+name: Tests
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        # Même version que compose.yaml.
+        image: postgres:17-bookworm
+        env:
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Connexion autorisée à créer des bases jetables (tests serveur et test de bout en bout).
+      TEST_DATABASE_URL: postgres://postgres:test@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Vérification des types
+        run: npm run typecheck
+      - name: Tests unitaires et d'API
+        run: npm test
+      - name: Construction
+        run: npm run build
+      - name: Navigateur de test
+        run: npx playwright install --with-deps chromium
+      - name: Parcours complet dans un navigateur
+        run: npm run test:e2e
