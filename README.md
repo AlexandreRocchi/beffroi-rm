@@ -68,16 +68,19 @@ client-serveur) et les guides de l'ANSSI — détail, menaces et risques résidu
 [dossier de sécurité](docs/securite.md) :
 
 - **Authentification** : second facteur TOTP **exigé par défaut** (anti-rejeu, codes de secours),
-  ou authentification unique **OpenID Connect** (Keycloak, LemonLDAP::NG…) avec MFA vérifié ;
+  ou authentification unique **OpenID Connect** (Keycloak, LemonLDAP::NG…) avec vérification du MFA par le niveau d'authentification exigé
+  (`OIDC_ACR_VALUES`) ;
   mots de passe robustes (mots courants, identité et 5 derniers refusés) hachés en scrypt avec
   un **poivre** secret ; anti-énumération, verrouillage, limitation par adresse IP.
 - **Sessions** : jeton de 256 bits haché en base, cookie `__Host-` `HttpOnly` `SameSite=Strict`,
   expiration (15 minutes pour l'administrateur), sessions visibles et révocables par l'utilisateur.
 - **Données** : analyses **et métadonnées** chiffrées en AES-256-GCM, liées à leur enregistrement,
   avec des sous-clés dérivées par usage (HKDF) et une **rotation de clé** sans interruption ;
-  secrets en fichiers, jamais dans l'environnement.
+  secrets lisibles depuis des fichiers (`*_FILE`), comme le font les modes de déploiement fournis.
 - **Base de données au moindre privilège** : rôle propriétaire réservé aux migrations, rôle
-  applicatif sans droit sur le schéma ; **journal en ajout seul** imposé par PostgreSQL.
+  applicatif sans droit sur le schéma ; **journal en ajout seul** pour le rôle applicatif lorsque
+  les rôles sont séparés (le propriétaire du schéma peut le contourner : le scellement et la copie
+  vers un SIEM le détectent).
 - **Journal d'audit scellé** (HMAC-SHA256 chaîné, rétrogradation détectée), copié en JSON vers
   un SIEM ; l'administrateur n'y voit jamais le nom des analyses.
 - **Navigateur** : CSP stricte sans script ni feuille de style injectés, COOP/COEP/CORP, Fetch
@@ -109,7 +112,8 @@ installation, sans base de données ni compte. Les études restent sur le poste 
 ([détails](docs/poste-seul.md)).
 
 **Pour une équipe**, Beffroi RM est un **serveur** : les analystes travaillent ensemble depuis leur navigateur.
-Docker n'est pas obligatoire : six modes d'installation, tous au même niveau de sécurité
+Docker n'est pas obligatoire : cinq modes d'installation ; les trois modes de production (Linux natif,
+Docker Compose, image seule) appliquent les mêmes mesures de sécurité
 (procédures complètes : **[guide d'installation](docs/installation.md)**).
 
 | Mode | En bref |
@@ -117,7 +121,6 @@ Docker n'est pas obligatoire : six modes d'installation, tous au même niveau de
 | **Linux natif** (systemd) | `sudo ./deploy/linux/installer.sh` depuis l'archive : compte de service, secrets transmis par systemd, unités durcies, rôles PostgreSQL au moindre privilège |
 | **Docker Compose** | `./scripts/generer-secrets.sh && docker compose up -d --build` : application + PostgreSQL |
 | **Image seule** | l'image Beffroi RM à côté d'un PostgreSQL existant (instance managée, grappe interne) |
-| **Kubernetes** | `kubectl apply -k deploy/kubernetes` : profil *restricted*, NetworkPolicy, Ingress |
 | **Poste d'évaluation** | `./beffroi.sh` (Linux, macOS) ou `beffroi.cmd` (Windows) depuis l'archive |
 | **Sources** | `npm ci && npm run build && npm start` |
 | **Poste seul** (un utilisateur) | exécutable Windows/Linux de la page Releases, ou `npm run poste` : aucun prérequis |
@@ -158,7 +161,7 @@ des risques R1 à R5 de l'exemple du guide.
 | Serveur | Node.js ≥ 22, Express 5, openid-client (OpenID Connect) |
 | Données | PostgreSQL ≥ 14 (pilote `pg`), études chiffrées AES-256-GCM |
 | Tests | Vitest (moteur, API, OIDC), Playwright (bout en bout, hors ligne) |
-| Déploiement | Linux natif (systemd), Docker Compose, image seule, Kubernetes ou poste d'évaluation, derrière Nginx / HAProxy |
+| Déploiement | Linux natif (systemd), Docker Compose, image seule ou poste d'évaluation, derrière Nginx / HAProxy |
 
 Ce socle est celui des services numériques de l'ANSSI dont le code est public
 ([MonServiceSécurisé](https://github.com/betagouv/mon-service-securise) : Node.js, TypeScript,
@@ -183,7 +186,7 @@ docs/     sources ANSSI, synthèse de la méthode, benchmark, conception produit
 ## Documentation
 
 **Dans l'application** : le menu **Documentation** (accessible avant même la connexion) réunit
-15 tutoriels pas à pas illustrés de captures d'écran — première connexion et second facteur,
+14 tutoriels pas à pas illustrés de captures d'écran — première connexion et second facteur,
 création d'une étude, chacun des cinq ateliers, carte de la menace, livrables, versions et
 partage, administration — ainsi qu'un glossaire EBIOS RM. Depuis chaque page d'étude, l'aide
 méthodologique (**?**) ouvre le tutoriel du bon atelier. Les captures sont régénérées depuis
@@ -196,7 +199,7 @@ Dans le dépôt :
 - [Synthèse de la méthode EBIOS RM](docs/01-methode-ebios-rm.md) — ateliers, formules, métriques, exigences du label
 - [Benchmark des outils du marché](docs/02-benchmark-concurrents.md) — Egerie, Agile Risk Manager, Fence, CISO Assistant, tableur ANSSI
 - [Conception produit](docs/03-conception-produit.md) — personas, périmètre, architecture, traçabilité des exigences du label
-- [Guide d'installation](docs/installation.md) — six modes d'installation, reverse proxy HTTPS, vérification
+- [Guide d'installation](docs/installation.md) — cinq modes d'installation, reverse proxy HTTPS, vérification
 - [Mode poste seul](docs/poste-seul.md) — exécutable Windows/Linux pour un utilisateur, sans serveur
 - [Guide d'utilisation](docs/guide-utilisation.md) — configuration, administration, conduite d'une étude, recommandations
 - [Dossier de sécurité](docs/securite.md) — menaces, mesures et tests, configuration de production, rotation de clé, risques résiduels
