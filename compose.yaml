@@ -64,7 +64,7 @@ services:
       context: .
       args:
         NODE_IMAGE: ${NODE_IMAGE:-node:22-bookworm-slim}
-    image: beffroi:1.1.0
+    image: beffroi:1.0.0
     command: ["node", "--disable-warning=ExperimentalWarning", "server/dist/server.js", "--migrate"]
     restart: "no"
     depends_on:
@@ -82,7 +82,7 @@ services:
 
   beffroi:
     <<: *hardening
-    image: beffroi:1.1.0
+    image: beffroi:1.0.0
     depends_on:
       migrate:
         condition: service_completed_successfully
