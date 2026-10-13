@@ -252,7 +252,7 @@ de l'application (modifiable).
 ## 7. Exigences du label ANSSI (cahier des charges v3.1)
 
 Le cahier des charges du label est la meilleure spécification fonctionnelle disponible. Il est
-tracé exigence par exigence dans [`03-conception-produit.md`](03-conception-produit.md) §9.
+tracé par groupes d'exigences dans [`03-conception-produit.md`](03-conception-produit.md) §9.
 Points structurants :
 
 - dérouler les 5 ateliers de façon itérative et exporter des livrables à chaque étape ;

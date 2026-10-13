@@ -10,7 +10,8 @@
 Une application web auto-hébergeable qui permet à une équipe de conduire **de bout en bout**
 une appréciation et un traitement des risques numériques selon **EBIOS Risk Manager v1.5**
 sur un périmètre défini, avec des **visuels natifs à chaque atelier**, des **calculs fidèles
-aux fiches méthodes** et les exigences de sécurité du **label ANSSI** (mode client-serveur).
+aux fiches méthodes** (hormis trois règles qui sont des choix de Beffroi RM, paramétrables :
+voir § 3.1) et les exigences de sécurité du **label ANSSI** (mode client-serveur).
 
 Principe directeur : *un outil de méthode, pas un GRC*. On saisit chaque objet une fois, tout le
 reste (gravités héritées, dangerosité, vraisemblance, niveaux de risque, cartographies,
@@ -32,7 +33,7 @@ l'organisation ; elle ne doit dépendre d'aucun service en ligne. D'où :
 | **Contributeur** (DSI, architecte, métier, threat intel) | compléter son périmètre (biens supports, PP, graphes d'attaque) | écriture sur l'étude |
 | **Décideur** (direction, autorité d'homologation) | lire la synthèse, la cartographie des risques, la stratégie de traitement ; accepter les risques résiduels | lecture |
 | **Consultant** | mener plusieurs études pour plusieurs clients, réutiliser ses bases de connaissances | propriétaire de ses études |
-| **Administrateur** | comptes, groupes, journal ; n'accède pas aux analyses sans y être invité (besoin d'en connaître) | administration uniquement |
+| **Administrateur** | comptes, groupes, journal ; n'accède jamais aux analyses (besoin d'en connaître) | administration uniquement |
 
 ## 3. Périmètre fonctionnel
 
@@ -57,6 +58,13 @@ l'organisation ; elle ne doit dépendre d'aucun service en ligne. D'où :
   matrices (pertinence, croisement Pr×D, niveau de risque), seuils des zones, pondération de la
   formule de dangerosité, bases de connaissances (catégories SR, OV, PP, impacts, biens
   supports, phases et catalogue d'actions élémentaires, aide à la cotation), import/fusion JSON.
+- **Choix propres à Beffroi RM** : trois règles de calcul ne viennent pas des fiches méthodes de
+  l'ANSSI mais de choix du produit, tous paramétrables dans les paramètres de l'étude :
+  la modulation de la pertinence de ±1 niveau selon l'activité (désactivée par défaut) ;
+  la grille Pr×D à 4 niveaux (grille de la fiche 8 sans la ligne Pr0 ni la colonne D0, valeurs
+  ramenées à V1–V4), qui s'applique aux échelles à 4 niveaux, réglage par défaut ;
+  la matrice de niveau de risque, calculée par le produit G×V (seuils 3 et 8 en échelles à
+  4 niveaux ; G×(V+1), seuils 4 et 11, en échelles à 5 niveaux).
 - **Aide contextuelle** : pour chaque activité, objectifs, participants et conseils tirés du
   guide et des fiches.
 - **Exports** : JSON complet (ré-importable), Excel multi-onglets (tout ou atelier par atelier),
@@ -85,7 +93,8 @@ l'organisation ; elle ne doit dépendre d'aucun service en ligne. D'où :
 ### 3.3 Atelier 2 — Sources de risque
 - Sources de risque (catégorie parmi la base modifiable, description).
 - Couples SR/OV : objectif visé (texte + catégorie), motivation, ressources, activité,
-  **pertinence calculée** (matrice fiche 4, modulée par l'activité) ou forcée, justification,
+  **pertinence calculée** (matrice fiche 4, modulable de ±1 niveau selon l'activité si le réglage
+  est activé) ou forcée, justification,
   priorité P1/P2, retenu/écarté + justification d'exclusion.
 - **Croisement OV ↔ ER** (matrice cochable) avec alertes : ER orphelins, couples sans ER ;
   gravité héritée affichée.
@@ -237,7 +246,7 @@ Synthèse ci-dessous ; menaces, mesures (avec le code et les tests correspondant
 de production et risques résiduels : [dossier de sécurité](securite.md).
 
 - Compte **administrateur distinct**, créé au premier démarrage avec mot de passe à changer ;
-  l'administrateur gère comptes, groupes et journal, sans accès aux analyses sauf invitation.
+  l'administrateur gère comptes, groupes et journal, sans jamais accéder aux analyses.
 - Comptes **nominatifs** (identifiant unique), mots de passe ≥ 12 caractères, hachage
   **scrypt** salé, verrouillage après 5 échecs (15 min), sessions de 30 min d'inactivité /
   12 h max, jeton de session aléatoire (256 bits) stocké haché, cookie `HttpOnly; SameSite=Strict;
@@ -329,3 +338,7 @@ nomenclature CycloneDX livrée avec l'archive d'installation.
 | EXI_S3 | journal chaîné couvrant tous les événements listés |
 | EXI_S6 | avertissements dans « À propos » et la documentation |
 | Annexe A | responsive, raccourcis, sauvegarde auto, contrôle de saisie, texte enrichi, en-têtes figés, lignes alternées, atelier courant visible, navigation libre, métriques utiles seules, annuler, listes triées avec recherche |
+
+Ne figurent pas dans ce tableau : les exigences EXI_S4, EXI_S5, EXI_S6_01 et EXI_S6_06. La ligne
+EXI_S6 ne couvre que les avertissements ; les clauses EXI_S6_02 à EXI_S6_05 (mentions d'évaluation)
+sont préparées mais sans objet tant que le produit n'est pas labellisé.
