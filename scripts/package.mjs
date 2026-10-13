@@ -71,7 +71,15 @@ node --disable-warning=ExperimentalWarning server\\dist\\server.js\r
 );
 
 // ───── nomenclature logicielle (SBOM) et licences tierces ─────
-const sbom = JSON.parse(execFileSync("npm", ["sbom", "--omit=dev", "--sbom-format=cyclonedx"], { cwd: root, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }));
+// Sous Windows, « npm » est un script .cmd : il ne se lance que par un shell (sinon spawnSync npm ENOENT).
+const sbom = JSON.parse(
+  execFileSync("npm", ["sbom", "--omit=dev", "--sbom-format=cyclonedx"], {
+    cwd: root,
+    encoding: "utf8",
+    maxBuffer: 64 * 1024 * 1024,
+    shell: process.platform === "win32",
+  }),
+);
 fs.writeFileSync(path.join(out, "sbom.cdx.json"), JSON.stringify(sbom, null, 2));
 
 const PERMISSIVE = new Set(["MIT", "MIT/X11", "ISC", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "0BSD", "BlueOak-1.0.0", "Unlicense", "CC0-1.0", "OFL-1.1", "Zlib", "Python-2.0", "MIT-0"]);
